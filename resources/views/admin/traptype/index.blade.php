@@ -4,7 +4,6 @@
         <div class="d-flex">
             <p class="rounded bg-danger m-0 d-flex align-self-center p-2 text-white">{{$trapTypes->total()}}</p>
             <h1 class="m-0">| Trap types</h1>
-            <a href="{{route('traptype.index')}}" class="btn btn-primary m-2 rounded-pill">All Trap types</a>
         </div>
         <a href="{{route('traptype.create')}}" class="btn btn-primary m-2 rounded-pill">Add Trap types</a>
     </div>
@@ -96,7 +95,7 @@
         @endforeach
         </tbody>
     </table>
-    {{ $trapTypes->appends(['search' => Request::get('search'), 'fields' => Request::get('fields')])->links() }}
+    {{ $trapTypes->links() }}
 
 @endsection
 

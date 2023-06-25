@@ -4,8 +4,6 @@
         <div class="d-flex">
             <p class="rounded bg-danger m-0 d-flex align-self-center p-2 text-white">{{$monsterSpecialTypes->total()}}</p>
             <h1 class="m-0">| Monster Special Types</h1>
-            <a href="{{route('monsterspecialtype.index')}}" class="btn btn-primary m-2 rounded-pill">All Monster
-                Special Types</a>
         </div>
         <a href="{{route('monsterspecialtype.create')}}" class="btn btn-primary m-2 rounded-pill">Add Monster
             Special Type</a>
@@ -98,7 +96,7 @@
         @endforeach
         </tbody>
     </table>
-    {{ $monsterSpecialTypes->appends(['search' => Request::get('search'), 'fields' => Request::get('fields')])->links() }}
+    {{ $monsterSpecialTypes->links() }}
 
 @endsection
 

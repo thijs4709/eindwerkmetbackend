@@ -20,10 +20,6 @@ class Photo extends Model
     public function user(){
         return $this->belongsTo(User::class);
     }
-    public function post()
-    {
-        return $this->hasOne(Post::class);
-    }
     public function box()
     {
         return $this->hasOne(Box::class);

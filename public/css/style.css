@@ -1,11 +1,201 @@
-    /* ----------------------------------------------------------
-    :: Template Name: TheGazette - News Magazine HTML5 Template
-    :: Author: Colorlib
-    :: Author URL: https://colorlib.com
-    :: Description: TheGazette is a smart & creative news & magazine template. It's suitable for all news & magazine website.
-    :: Version: 1.0.0
-    :: Created: 17 January 2018
-    :: Last Updated: 17 January 2018
-    ---------------------------------------------------------- */
+/***algemene css***/
+@font-face {
+    font-family: popR;
+    src: url("../webfonts/Poppins-Regular.ttf");
+}
 
-    /* ============ PLACE YOUR CUSTOM CSS HERE ============ */
+body aside {
+    font-family: popR;
+}
+
+h1, h2, h3 {
+    font-weight: bold;
+}
+
+p {
+    margin: 0;
+}
+
+body {
+    font-family: popR;
+}
+
+.navbar-toggler-icon {
+    background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 30 30'%3e%3cpath stroke='rgba%2810, 173, 10, 1%29' stroke-linecap='round' stroke-miterlimit='10' stroke-width='2' d='M4 7h22M4 15h22M4 23h22'/%3e%3c/svg%3e");
+}
+
+/**variables**/
+:root {
+    --main-color: #0aad0a;
+    --main-grey: #5c6c75;
+    --main-light-grey: #c1c7c6;
+}
+
+
+/**home page**/
+/*header start*/
+.bg-green {
+    background-color: var(--main-color);
+}
+
+.text-green {
+    color: var(--main-color);
+}
+
+.border-green {
+    border-color: var(--main-color);
+}
+
+@media (min-width: 992px) {
+    .border-bottom-lg-0 {
+        border-width: 0 !important;
+    }
+}
+
+
+/*main start*/
+/*section1 start*/
+#background1 {
+    background-color: #009200;
+    border-radius: 15px;
+}
+
+#background2 {
+    background-color: #c30000;
+    border-radius: 15px;
+}
+
+#background3 {
+    background-color: #ffba68;
+    border-radius: 15px;
+}
+
+/*section2 start*/
+#section2 :hover {
+    color: var(--main-color);
+    border-color: var(--main-color);
+}
+
+
+/*section3 start*/
+#section3 :hover {
+    color: var(--main-color);
+    border-color: var(--main-color);
+}
+.bg-arrows {
+    background-color: var(--main-light-grey);
+    width: 40px;
+    height: 40px;
+    border-radius: 50px;
+    color: #000;
+    transition: ease-in-out 400ms;
+    opacity: 1;
+}
+
+.bg-arrows:hover {
+    background-color: var(--main-color);
+    width: 40px;
+    height: 40px;
+    border-radius: 50px;
+    color: #fff;
+}
+
+.bg-arrows:focus {
+    background-color: var(--main-light-grey);
+    width: 40px;
+    height: 40px;
+    border-radius: 50px;
+    color: #000;
+}
+
+.bi-caret-right-fill {
+    width: 20px;
+    height: 20px;
+}
+
+.bi-caret-left-fill {
+    width: 20px;
+    height: 20px;
+}
+
+.carousel-control-prev {
+    position: unset;
+}
+
+.carousel-control-next {
+    position: unset;
+}
+.carousel-item.monster {
+    margin-right: 50px; /* Adjust the margin as needed */
+}
+
+.carousel-inner {
+    display: flex;
+    flex-wrap: nowrap;
+    overflow: hidden;
+}
+
+@media (max-width: 767px) {
+    .carousel-inner .carousel-item > div {
+        display: none
+    }
+
+    .carousel-inner .carousel-item > div:first-child {
+        display: block
+    }
+}
+
+.carousel-inner .carousel-item.active, .carousel-inner .carousel-item-next, .carousel-inner .carousel-item-prev {
+    display: flex
+}
+@media (min-width: 1440px){
+    .card-img{
+        height: 400px;
+    }
+}
+
+@media (min-width: 768px) {
+    .carousel-inner .carousel-item-end.active, .carousel-inner .carousel-item-next {
+        transform: translateX(25%)
+    }
+
+    .carousel-inner .carousel-item-start.active, .carousel-inner .carousel-item-prev {
+        transform: translateX(-25%)
+    }
+}
+
+.carousel-inner .carousel-item-end, .carousel-inner .carousel-item-start {
+    transform: translateX(0)
+}
+
+#end-main article i {
+    color: var(--main-color);
+}
+
+
+/*section4 start*/
+/*end-main*/
+
+
+/*footer start*/
+footer {
+    background-color: var(--main-light-grey);
+}
+
+.text-grey {
+    color: var(--main-grey);
+}
+
+.border-grey {
+    border-color: var(--main-grey) !important;
+}
+
+/**Checkout page**/
+/*main*/
+.accordion{
+    --bs-accordion-active-color: var(--main-color)!important;
+}
+.fs-14px{
+    font-size: 0.875rem;
+}
+

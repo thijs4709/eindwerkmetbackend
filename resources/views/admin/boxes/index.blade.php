@@ -4,7 +4,6 @@
         <div class="d-flex">
             <p class="rounded bg-danger m-0 d-flex align-self-center p-2 text-white">{{$boxes->total()}}</p>
             <h1 class="m-0">| Boxes</h1>
-            <a href="{{route('boxes.index')}}" class="btn btn-primary m-2 rounded-pill">All Boxes</a>
         </div>
         <a href="{{route('boxes.create')}}" class="btn btn-primary m-2 rounded-pill">Add Box</a>
     </div>
@@ -19,6 +18,7 @@
             <th>Id</th>
             <th>Photo</th>
             <th>name</th>
+            <th>Description</th>
             <th>price</th>
             <th>Created</th>
             <th>Updated</th>
@@ -35,6 +35,7 @@
                          src="{{$box->photo->file ? asset($box->photo->file) : 'http://via.placeholder.com/62x62'}}" alt="{{$box->name}}">
                 </td>
                 <td>{{$box->name}}</td>
+                <td>{{ Str::limit($box->description,10)}}</td>
                 <td>{{$box->price}} €</td>
                 <td>{{$box->created_at ? $box->created_at->diffForHumans() : ''}}</td>
                 <td>{{$box->updated_at ? $box->updated_at->diffForHumans() : ''}}</td>
@@ -100,7 +101,7 @@
         @endforeach
         </tbody>
     </table>
-    {{ $boxes->appends(['search' => Request::get('search'), 'fields' => Request::get('fields')])->links() }}
+    {{ $boxes->links() }}
 
 
 @endsection

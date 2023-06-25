@@ -18,6 +18,6 @@ class PhotoSeeder extends Seeder
     {
         //
         Storage::disk('public')->deleteDirectory('posts');
-        Photo::factory()->count(10)->create();
+        Photo::factory()->count(1)->create();
     }
 }

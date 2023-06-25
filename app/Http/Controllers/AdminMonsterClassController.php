@@ -127,10 +127,18 @@ class AdminMonsterClassController extends Controller
     {
         $monsterClass = MonsterClass::findOrFail($id);
         $monsterClass->delete();
-        return redirect()->route('monsterclass.index')->with('status', 'Monster Class deleted!');
+        return redirect()->route('monsterclass.index')->with([
+            'alert' => [
+                'message' => 'Monster Class Deleted',
+                'type' => 'danger'
+            ]]);
     }
     public function monsterClassRestore($id){
         MonsterClass::onlyTrashed()->where('id', $id)->restore();
-        return redirect()->route('monsterclass.index')->with('status', 'Monster class restored!');
+        return redirect()->route('monsterclass.index')->with([
+            'alert' => [
+                'message' => 'Monster Class Restored',
+                'type' => 'success'
+            ]]);
     }
 }

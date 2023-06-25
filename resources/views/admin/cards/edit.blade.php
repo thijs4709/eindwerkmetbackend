@@ -25,6 +25,7 @@
                 </select>
 
                 <div class="form-group mb-3">
+                    <label for="name">Name</label>
                     <input name="name" type="text" class="form-control" id="floatingInputValue" placeholder="Name"
                            value="{{$card->name}}">
                     @error('name')
@@ -33,6 +34,7 @@
                 </div>
 
                 <div class="form-group mb-3">
+                    <label for="description">Description</label>
                     <input name="description" type="text" class="form-control" id="floatingInputValue" placeholder="Description"
                            value=" {{$card->description}} ">
                     @error('description')
@@ -41,6 +43,7 @@
                 </div>
 
                 <div class="form-group mb-3">
+                    <label for="price">Price</label>
                     <input name="price" type="number" step="any" class="form-control" id="floatingInputValue"
                            placeholder="Price" value="{{$card->price}}">
                     @error('price')
@@ -57,6 +60,43 @@
 
 
                 <div id="monsterSection">
+                    <div class="form-group mb-3">
+                        <label for="level">Level</label>
+                        <input name="level" type="number" min="0" max="13" class="form-control" id="floatingInputValue" placeholder="Level"
+                               value="{{ $card->level }}" >
+                        @error('level')
+                        <p class="text-danger fs-6">{{$message}}</p>
+                        @enderror
+                    </div>
+
+                    <div class="form-group mb-3">
+                        <label for="atk">ATK</label>
+                        <input name="atk" type="text" pattern="^\d+|\?$" class="form-control" id="floatingInputValue" placeholder="Atk"
+                               value="{{ $card->atk }}">
+                        @error('atk')
+                        <p class="text-danger fs-6">{{$message}}</p>
+                        @enderror
+                    </div>
+
+                    <div class="form-group mb-3">
+                        <label for="def">DEF</label>
+                        <input name="def" type="text" pattern="^\d+|\?$" class="form-control" id="floatingInputValue" placeholder="Def"
+                               value="{{ $card->def }}">
+                        @error('def')
+                        <p class="text-danger fs-6">{{$message}}</p>
+                        @enderror
+                    </div>
+
+                    <div class="btn-group-vertical d-flex align-items-center">
+                        <input type="hidden" name="pendulum" value="0">
+                        <label>
+                            <input type="checkbox" class="form-check-input" value="1" name="pendulum" @if($card->pendulum) {{'checked="true"'}} @endif>Pendulum
+                        </label>
+                        @error('pendulum')
+                        <p class="text-danger fs-6">{{ $message }}</p>
+                        @enderror
+                    </div>
+
                     <div class="d-flex justify-content-around border border-1 my-3 py-3 bg-white">
                         <div class="form-group mb-3 d-flex flex-column">
                             <label>Monster Attribute</label>
@@ -118,40 +158,6 @@
                             <p class="text-danger fs-6">{{ $message }}</p>
                             @enderror
                         </div>
-                    </div>
-
-                    <div class="form-group mb-3">
-                        <input name="level" type="number" min="0" max="13" class="form-control" id="floatingInputValue" placeholder="Level"
-                               value="{{ $card->level }}" >
-                        @error('level')
-                        <p class="text-danger fs-6">{{$message}}</p>
-                        @enderror
-                    </div>
-
-                    <div class="btn-group-vertical">
-                        <input type="hidden" name="pendulum" value="0">
-                        <label>
-                            <input type="checkbox" class="form-check-input" value="1" name="pendulum" @if($card->pendulum) {{'checked="true"'}} @endif>Pendulum
-                        </label>
-                        @error('pendulum')
-                        <p class="text-danger fs-6">{{ $message }}</p>
-                        @enderror
-                    </div>
-
-                    <div class="form-group mb-3">
-                        <input name="atk" type="text" pattern="^\d+|\?$" class="form-control" id="floatingInputValue" placeholder="Atk"
-                               value="{{ $card->atk }}">
-                        @error('atk')
-                        <p class="text-danger fs-6">{{$message}}</p>
-                        @enderror
-                    </div>
-
-                    <div class="form-group mb-3">
-                        <input name="def" type="text" pattern="^\d+|\?$" class="form-control" id="floatingInputValue" placeholder="Def"
-                               value="{{ $card->def }}">
-                        @error('def')
-                        <p class="text-danger fs-6">{{$message}}</p>
-                        @enderror
                     </div>
                 </div>
 

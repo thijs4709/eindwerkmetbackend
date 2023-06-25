@@ -127,10 +127,18 @@ class AdminTrapTypeController extends Controller
     {
         $trapType = TrapType::findOrFail($id);
         $trapType->delete();
-        return redirect()->route('traptype.index')->with('status', 'Trap type deleted!');
+        return redirect()->route('traptype.index')->with([
+            'alert' => [
+                'message' => 'Trap Type Deleted',
+                'type' => 'danger'
+            ]]);
     }
     public function trapTypeRestore($id){
         TrapType::onlyTrashed()->where('id', $id)->restore();
-        return redirect()->route('traptype.index')->with('status', 'Trap type restored!');
+        return redirect()->route('traptype.index')->with([
+            'alert' => [
+                'message' => 'Trap Type Restored',
+                'type' => 'success'
+            ]]);
     }
 }

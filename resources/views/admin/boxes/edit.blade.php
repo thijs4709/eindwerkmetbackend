@@ -18,14 +18,23 @@
                 @csrf
                 @method('PATCH')
                 <div class="form-group mb-3">
+                    <label for="name">Name</label>
                     <input name="name" type="text" class="form-control" id="floatingInputValue" placeholder="Name" value="{{$box->name}}">
                     @error('name')
                     <p class="text-danger fs-6">{{$message}}</p>
                     @enderror
                 </div>
                 <div class="form-group mb-3">
-                    <input name="price" type="text" class="form-control" id="floatingInputValue" placeholder="Price" value="{{$box->price}}">
+                    <label for="price">Price</label>
+                    <input name="price"  type="number" step="any" class="form-control" id="floatingInputValue" placeholder="Price" value="{{$box->price}}">
                     @error('price')
+                    <p class="text-danger fs-6">{{$message}}</p>
+                    @enderror
+                </div>
+                <div class="form-group mb-3">
+                    <label for="description">Description</label>
+                    <input name="description" type="text" class="form-control" id="floatingInputValue" placeholder="description" value="{{$box->description}}">
+                    @error('description')
                     <p class="text-danger fs-6">{{$message}}</p>
                     @enderror
                 </div>

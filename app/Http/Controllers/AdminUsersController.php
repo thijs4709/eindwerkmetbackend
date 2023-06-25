@@ -38,19 +38,10 @@ class AdminUsersController extends Controller
         //of
         //return view('admin.users.index',compact('users'));
     }
-    public function index2()
-    {
-        //
-        $users = User::orderByDesc('id')->withTrashed()->paginate(20);
-        return view("admin.users.index2", ["users" => $users]);
-        //of
-        //return view('admin.users.index',compact('users'));
-    }
-
     /**
      * Show the form for creating a new resource.
      *
-     * @return \Illuminate\Http\Response
+     * @return \Illuminate\Contracts\Foundation\Application|\Illuminate\Contracts\View\Factory|\Illuminate\Contracts\View\View
      */
     public function create()
     {
@@ -63,7 +54,7 @@ class AdminUsersController extends Controller
      * Store a newly created resource in img.
      *
      * @param  \Illuminate\Http\Request  $request
-     * @return \Illuminate\Http\Response
+     * @return \Illuminate\Http\RedirectResponse
      */
     public function store(UsersRequest $request)
     {
@@ -109,7 +100,7 @@ class AdminUsersController extends Controller
      * Show the form for editing the specified resource.
      *
      * @param  int  $id
-     * @return \Illuminate\Http\Response
+     * @return \Illuminate\Contracts\Foundation\Application|\Illuminate\Contracts\View\Factory|\Illuminate\Contracts\View\View
      */
     public function edit($id)
     {
@@ -129,12 +120,12 @@ class AdminUsersController extends Controller
      *
      * @param  \Illuminate\Http\Request  $request
      * @param  int  $id
-     * @return \Illuminate\Http\Response
+     * @return \Illuminate\Contracts\Foundation\Application|\Illuminate\Http\RedirectResponse|\Illuminate\Routing\Redirector
      */
     public function update(Request $request, $id)
     {
             request()->validate([
-            'name'=> ['required','max:255','min:5'],
+            'name'=> ['required','max:255','min:1'],
             'email'=>['required','email'],
             'roles' => ['required', Rule::exists('roles', 'id')],
             'is_active'=>'required',
@@ -171,25 +162,30 @@ class AdminUsersController extends Controller
      * Remove the specified resource from img.
      *
      * @param  int  $id
-     * @return \Illuminate\Http\Response
+     * @return \Illuminate\Http\RedirectResponse
      */
     public function destroy($id)
     {
         //
         $user = User::findOrFail($id);
-        UsersSoftDelete::dispatch($user);
         $user->delete();
-        return redirect()->route('users.index');
+
+        return redirect()->route('users.index')->with([
+            'alert' => [
+                'message' => 'User deleted',
+                'type' => 'danger'
+            ]
+        ]);
     }
     public function userRestore($id){
         User::onlyTrashed()->where('id', $id)->restore();
         // herstel ook alle posts van de gebruiker
         $user = User::withTrashed()->where('id', $id)->first();
-        $user->posts()->onlyTrashed()->restore();
+        $user->restore();
         return redirect()->route('users.index')->with([
             'alert' => [
-                'message' => 'User deleted',
-                'type' => 'danger'
+                'message' => 'User restored',
+                'type' => 'success'
             ]
         ]);;
     }

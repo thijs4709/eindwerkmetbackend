@@ -41,9 +41,10 @@ class AdminBoxesController extends Controller
     public function store(Request $request)
     {
         request()->validate([
-            'name'=> ['required','between:5,255','unique:boxes,name'],
+            'name'=> ['required','between:1,255','unique:boxes,name'],
             'price'=>['required','numeric','min:0.01','regex:/^\d+(,\d{1,2})?(\.\d{1,2})?$/'],
             'photo_id'=>['required'],
+            'description'=>['required'],
         ],
             [
                 'name.required'=> 'Name is required',
@@ -53,12 +54,13 @@ class AdminBoxesController extends Controller
                 'price.numeric'=>'Price can only be a number',
                 'price.regex'=>'test',
                 'photo_id.required'=>'you must add a image',
+                'description'=>'Description is required',
             ]);
 
         $box = new Box();
 
         $box->name = $request->name;
-
+        $box->description = $request->description;
         $box->price = $request->price;
         $box->slug = Str::slug($request->name,'-');
         if ($file = $request->file("photo_id")) {
@@ -114,6 +116,7 @@ class AdminBoxesController extends Controller
         request()->validate([
             'name'=> ['required','between:1,255', Rule::unique('boxes')->ignore($id),],
             'price'=>['required','numeric','min:0.01','regex:/^\d+(,\d{1,2})?(\.\d{1,2})?$/'],
+            'description'=>['required'],
         ],
             [
                 'name.required'=> 'Name is required',
@@ -122,6 +125,7 @@ class AdminBoxesController extends Controller
                 'price.required'=>'Price is required',
                 'price.numeric'=>'Price can only be a number',
                 'price.regex'=>'test',
+                'description'=>'Description is required',
             ]);
         $box = Box::findOrFail($id);
         $input = $request->all();
@@ -163,10 +167,18 @@ class AdminBoxesController extends Controller
 
         $box = Box::findOrFail($id);
         $box->delete();
-        return redirect()->route('boxes.index')->with('status', 'Box deleted!');
+        return redirect()->route('boxes.index')->with([
+            'alert' => [
+                'message' => 'Box Deleted',
+                'type' => 'danger'
+            ]]);
     }
     public function boxRestore($id){
         Box::onlyTrashed()->where('id', $id)->restore();
-        return redirect()->route('boxes.index')->with('status', 'Box restored!');
+        return redirect()->route('boxes.index')->with([
+            'alert' => [
+                'message' => 'Box Restored',
+                'type' => 'success'
+            ]]);
     }
 }

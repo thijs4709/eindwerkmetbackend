@@ -31,6 +31,7 @@ return new class extends Migration
             $table->foreignId('trap_type_id')->unsigned()->nullable()->constrained()->cascadeOnDelete();
             $table->foreignId('card_type_id')->unsigned()->nullable()->constrained()->cascadeOnDelete();
             $table->decimal('price');
+            $table->string('product_type')->default('card');
             $table->timestamps();
             $table->softDeletes();
         });

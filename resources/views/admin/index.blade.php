@@ -5,7 +5,7 @@
 @section('content')
 
 
-    <div class="row">
+   {{-- <div class="row">
         <!-- Area Chart -->
         <div class="col-xl-8 col-lg-7">
             <div class="card shadow mb-4">
@@ -78,15 +78,15 @@
                 </div>
             </div>
         </div>
-    </div>
+    </div>--}}
 
     <!-- Content Row -->
-    <div class="row">
+<!--    <div class="row">
 
-        <!-- Content Column -->
+        &lt;!&ndash; Content Column &ndash;&gt;
         <div class="col-lg-6 mb-4">
 
-            <!-- Project Card Example -->
+            &lt;!&ndash; Project Card Example &ndash;&gt;
             <div class="card shadow mb-4">
                 <div class="card-header py-3">
                     <h6 class="m-0 font-weight-bold text-primary">Projects</h6>
@@ -125,7 +125,7 @@
                 </div>
             </div>
 
-            <!-- Color System -->
+            &lt;!&ndash; Color System &ndash;&gt;
             <div class="row">
                 <div class="col-lg-6 mb-4">
                     <div class="card bg-primary text-white shadow">
@@ -197,7 +197,7 @@
 
         <div class="col-lg-6 mb-4">
 
-            <!-- Illustrations -->
+            &lt;!&ndash; Illustrations &ndash;&gt;
             <div class="card shadow mb-4">
                 <div class="card-header py-3">
                     <h6 class="m-0 font-weight-bold text-primary">Illustrations</h6>
@@ -216,7 +216,7 @@
                 </div>
             </div>
 
-            <!-- Approach -->
+            &lt;!&ndash; Approach &ndash;&gt;
             <div class="card shadow mb-4">
                 <div class="card-header py-3">
                     <h6 class="m-0 font-weight-bold text-primary">Development Approach</h6>
@@ -231,5 +231,5 @@
             </div>
 
         </div>
-    </div>
+    </div>-->
 @endsection

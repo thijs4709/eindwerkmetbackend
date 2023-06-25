@@ -128,10 +128,18 @@ class AdminMonsterTypeController extends Controller
     {
         $monsterType = MonsterType::findOrFail($id);
         $monsterType->delete();
-        return redirect()->route('monstertype.index')->with('status', 'Monster type deleted!');
+        return redirect()->route('monstertype.index')->with([
+            'alert' => [
+                'message' => 'Monster Type Deleted',
+                'type' => 'danger'
+            ]]);
     }
     public function monsterTypeRestore($id){
         MonsterType::onlyTrashed()->where('id', $id)->restore();
-        return redirect()->route('monstertype.index')->with('status', 'Monster type restored!');
+        return redirect()->route('monstertype.index')->with([
+            'alert' => [
+                'message' => 'Monster Type Restored',
+                'type' => 'success'
+            ]]);
     }
 }

@@ -4,7 +4,6 @@
         <div class="d-flex">
             <p class="rounded bg-danger m-0 d-flex align-self-center p-2 text-white">{{$cards->total()}}</p>
             <h1 class="m-0">| Cards</h1>
-            <a href="{{route('cards.index')}}" class="btn btn-primary m-2 rounded-pill">All Cards</a>
         </div>
         <a href="{{route('cards.create')}}" class="btn btn-primary m-2 rounded-pill">Add Card</a>
     </div>
@@ -128,7 +127,7 @@
         </div>
     </div>
 
-    {{ $cards->appends(['search' => Request::get('search'), 'fields' => Request::get('fields')])->links() }}
+    {{ $cards->links() }}
 
 
 @endsection

@@ -12,6 +12,7 @@
         <div class="d-flex">
             <img class="img-thumbnail img-fluid" src="{{asset($box->photo->file)}}" alt="{{$box->name}}">
             <div  class="mx-5">
+                <p>{{$box->description}}</p>
                 <p>Posted on {{$box->created_at ? $box->created_at->diffForHumans() : 'no date'}}</p>
             </div>
         </div>

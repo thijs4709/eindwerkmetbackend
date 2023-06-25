@@ -3,7 +3,7 @@
     Create User
 @endsection
 @section('content')
-    <x-heading heading="Create user"></x-heading>
+    <h1>Create user</h1>
     <hr>
     @include('includes.form_error')
 
@@ -18,7 +18,7 @@
     </div>
     <div class="form-group">
         {!! Form::label('Select roles: (hou de ctrl toets ingedrukt om meerdere te selecteren') !!}
-        {!! Form::select('roles[]',$roles,null,['class'=>'form-control','placeholder' => 'Pick a role...','multiple'=>'multiple']) !!}
+        {!! Form::select('roles[]',$roles,null,['class'=>'form-control','multiple'=>'multiple']) !!}
     </div>
     <div class="form-group">
         {!! Form::label('is_active', 'Status:') !!}

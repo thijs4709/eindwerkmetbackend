@@ -17,6 +17,7 @@
         </select>
 
         <div class="form-group mb-3">
+            <label for="name">Name</label>
             <input name="name" type="text" class="form-control" id="floatingInputValue" placeholder="Name"
                    value="{{ old('name') }}">
             @error('name')
@@ -25,6 +26,7 @@
         </div>
 
         <div class="form-group mb-3">
+            <label for="description">Description</label>
             <input name="description" type="text" class="form-control" id="floatingInputValue" placeholder="Description"
                    value="{{ old('description') }}">
             @error('description')
@@ -33,6 +35,7 @@
         </div>
 
         <div class="form-group mb-3">
+            <label for="price">Price</label>
             <input name="price" type="number" step="any" class="form-control" id="floatingInputValue"
                    placeholder="Price" value="{{ old('price') }}">
             @error('price')
@@ -49,6 +52,43 @@
 
 
         <div id="monsterSection">
+            <div class="form-group mb-3">
+                <label for="level">Level</label>
+                <input name="level" type="number" min="0" max="13" class="form-control" id="floatingInputValue" placeholder="Level"
+                       value="{{ old('level') }}">
+                @error('level')
+                <p class="text-danger fs-6">{{$message}}</p>
+                @enderror
+            </div>
+
+            <div class="form-group mb-3">
+                <label for="atk">ATK</label>
+                <input name="atk" type="text" pattern="^\d+|\?$" class="form-control" id="floatingInputValue" placeholder="Atk"
+                       value="{{ old('atk') }}">
+                @error('atk')
+                <p class="text-danger fs-6">{{$message}}</p>
+                @enderror
+            </div>
+
+            <div class="form-group mb-3">
+                <label for="def">DEF</label>
+                <input name="def" type="text" pattern="^\d+|\?$" class="form-control" id="floatingInputValue" placeholder="Def"
+                       value="{{ old('def') }}">
+                @error('def')
+                <p class="text-danger fs-6">{{$message}}</p>
+                @enderror
+            </div>
+
+            <div class="btn-group-vertical d-flex align-items-center">
+                <input type="hidden" name="pendulum" value="0">
+                <label class="mr-15">
+                    <input type="checkbox" class="form-check-input" value="1"  name="pendulum">Pendulum
+                </label>
+                @error('pendulum')
+                <p class="text-danger fs-6">{{ $message }}</p>
+                @enderror
+            </div>
+
             <div class="d-flex justify-content-around border border-1 my-3 py-3 bg-white">
                 <div class="form-group mb-3 d-flex flex-column">
                     <label>Monster Attribute</label>
@@ -99,50 +139,16 @@
                     <label>Monster Type</label>
                     <div class="btn-group-vertical">
                         @foreach($monsterTypes as $monsterType)
-                        <label>
-                            <input type="radio" name="monster_type_id" value="{{ $monsterType->id }}"
-                                   autocomplete="off"> {{ $monsterType->name }}
-                        </label>
+                            <label>
+                                <input type="radio" name="monster_type_id" value="{{ $monsterType->id }}"
+                                       autocomplete="off"> {{ $monsterType->name }}
+                            </label>
                         @endforeach
                     </div>
                     @error('monster_type_id')
                     <p class="text-danger fs-6">{{ $message }}</p>
                     @enderror
                 </div>
-            </div>
-
-            <div class="form-group mb-3">
-                <input name="level" type="number" min="0" max="13" class="form-control" id="floatingInputValue" placeholder="Level"
-                       value="{{ old('level') }}">
-                @error('level')
-                <p class="text-danger fs-6">{{$message}}</p>
-                @enderror
-            </div>
-
-            <div class="btn-group-vertical">
-                <input type="hidden" name="pendulum" value="0">
-                <label>
-                    <input type="checkbox" class="form-check-input" value="1"  name="pendulum">Pendulum
-                </label>
-                @error('pendulum')
-                <p class="text-danger fs-6">{{ $message }}</p>
-                @enderror
-            </div>
-
-            <div class="form-group mb-3">
-                <input name="atk" type="text" pattern="^\d+|\?$" class="form-control" id="floatingInputValue" placeholder="Atk"
-                       value="{{ old('atk') }}">
-                @error('atk')
-                <p class="text-danger fs-6">{{$message}}</p>
-                @enderror
-            </div>
-
-            <div class="form-group mb-3">
-                <input name="def" type="text" pattern="^\d+|\?$" class="form-control" id="floatingInputValue" placeholder="Def"
-                       value="{{ old('def') }}">
-                @error('def')
-                <p class="text-danger fs-6">{{$message}}</p>
-                @enderror
             </div>
         </div>
 

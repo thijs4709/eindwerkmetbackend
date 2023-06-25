@@ -2,6 +2,8 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\CardStoreRequest;
+use App\Http\Requests\CardUpdateRequest;
 use App\Models\Card;
 use App\Models\CardType;
 use App\Models\MonsterAttribute;
@@ -24,7 +26,7 @@ class AdminCardController extends Controller
      */
     public function index()
     {
-        $cards = Card::with('photo', 'monsterAttribute', 'monsterClass', 'monsterSpecialType', 'monsterType', 'spellType', 'trapType','cardType')->orderByDesc("id")->withTrashed()->paginate(5);
+        $cards = Card::with('photo', 'monsterAttribute', 'monsterClass', 'monsterSpecialType', 'monsterType', 'spellType', 'trapType', 'cardType')->orderByDesc("id")->withTrashed()->paginate(5);
 
         return view('admin.cards.index', compact('cards'));
     }
@@ -52,121 +54,52 @@ class AdminCardController extends Controller
      * @param \Illuminate\Http\Request $request
      * @return \Illuminate\Http\RedirectResponse
      */
-    public function store(Request $request)
+    public function store(CardStoreRequest $request)
     {
-        request()->validate([
-            'name' => ['required', 'between:1,255', 'unique:cards,name'],
-            'price' => ['required', 'numeric', 'min:0.01', 'regex:/^\d+(,\d{1,2})?(\.\d{1,2})?$/'],
-            'photo_id' => ['required'],
-            'description' => ['required'],
-            'atk' => [
-                Rule::requiredIf(function () use ($request) {
-                    return $request->input('card_type_id') === '1';
-                }),
-                'nullable',
-                'min:0',
-                'regex:/^\d+$|^\?$/',
-            ],
-            'def' => [
-                Rule::requiredIf(function () use ($request) {
-                    return $request->input('card_type_id') === '1';
-                }),
-                'nullable',
-                'min:0',
-                'regex:/^\d+$|^\?$/',
-            ],
-            'level' => [
-                Rule::requiredIf(function () use ($request) {
-                    return $request->input('card_type_id') === '1';
-
-                }),
-
-                'nullable',
-                'numeric',
-                'min:0',
-                function ($attribute, $value, $fail) use ($request) {
-                    if ($request->input('monster_class_id') === '7' && $value > 8) {
-                        $fail('The max value for Level when Monster Class is selected is 8.');
-                    } elseif ($value > 13) {
-                        $fail('The max value for Level is 13.');
-                    }
-                },
-            ],
-            'monster_attribute_id' => [
-                Rule::requiredIf(function () use ($request) {
-                    return $request->input('card_type_id') === '1';
-                }),
-                'nullable',
-            ],
-            'monster_class_id' => [
-                Rule::requiredIf(function () use ($request) {
-                    return $request->input('card_type_id') === '1';
-                }),
-                'nullable',
-            ],
-            'monster_type_id' => [
-                Rule::requiredIf(function () use ($request) {
-                    return $request->input('card_type_id') === '1';
-                }),
-                'nullable',
-            ],
-            'spell_type_id' => [
-                Rule::requiredIf(function () use ($request) {
-                    return $request->input('card_type_id') === '2';
-                }),
-                'nullable',
-            ],
-            'trap_type_id' => [
-                Rule::requiredIf(function () use ($request) {
-                    return $request->input('card_type_id') === '3';
-                }),
-                'nullable',
-            ],
-
-        ],
-            [
-                'name.required' => 'Name is required',
-                'name.between' => 'Name between 5 and 255 characters required',
-                'name.unique' => 'Name must be unique',
-                'price.required' => 'Price is required',
-                'price.numeric' => 'Price can only be a number',
-                'price.regex' => 'test',
-                'photo_id.required' => 'you must add a image',
-                'description' => 'Description is required',
-                'atk.required' => 'ATK is required for monster cards',
-                'atk.regex' => 'ATK must be a number or a ?',
-                'atk.min'=> 'ATK must be minimum of 0',
-                'def.required' => 'DEF is required for monster cards',
-                'def.regex' => 'DEF must be a number or a ?',
-                'def.min'=> 'DEF must be minimum of 0',
-                'level.required' => 'level is required for monster cards',
-                'level.numeric' => 'level must be a number',
-                'level.min'=> 'level must be minimum of 0',
-                'level.max'=> 'level must be maximum of 13',
-                'monster_attribute_id.required' => 'monster attribute is required for monster cards',
-                'monster_class_id.required' => 'monster class is required for monster cards',
-                'monster_type_id.required' => 'monster type is required for monster cards',
-                'spell_type_id.required' => 'Spell type is required for spell cards',
-                'trap_type_id.required' => 'Trap type is required for trap cards',
-            ]);
 
         $card = new Card();
 
-        $card->name = $request->name;
+        $card['name'] = $request->name;
+        $card['description'] = $request->description;
+        $card['price'] = $request->price;
+        $card['card_type_id'] = $request->card_type_id;
+
+        if ($request->card_type_id == 1) {
+            $card['atk'] = $request->atk;
+            $card['def'] = $request->def;
+            $card['level'] = $request->level;
+            $card['pendulum'] = $request->pendulum;
+            $card['monster_type_id'] = $request->monster_type_id;
+            $card['monster_special_type_id'] = $request->monster_special_type_id;
+            $card['monster_class_id'] = $request->monster_class_id;
+            $card['monster_attribute_id'] = $request->monster_attribute_id;
+            $card['spell_type_id'] = null;
+            $card['trap_type_id'] = null;
+        } elseif ($request->card_type_id == 2) {
+            $card['atk'] = null;
+            $card['def'] = null;
+            $card['level'] = null;
+            $card['pendulum'] = 0;
+            $card['monster_type_id'] = null;
+            $card['monster_special_type_id'] = null;
+            $card['monster_class_id'] = null;
+            $card['monster_attribute_id'] = null;
+            $card['spell_type_id'] = $request->spell_type_id;
+            $card['trap_type_id'] = null;
+        } elseif ($request->card_type_id == 3) {
+            $card['atk'] = null;
+            $card['def'] = null;
+            $card['level'] = null;
+            $card['pendulum'] = 0;
+            $card['monster_type_id'] = null;
+            $card['monster_special_type_id'] = null;
+            $card['monster_class_id'] = null;
+            $card['monster_attribute_id'] = null;
+            $card['spell_type_id'] = null;
+            $card['trap_type_id'] = $request->trap_type_id;
+        }
+
         $card->slug = Str::slug($request->name, '-');
-        $card->description = $request->description;
-        $card->monster_attribute_id = $request->monster_attribute_id;
-        $card->monster_class_id = $request->monster_class_id;
-        $card->monster_special_type_id = $request->monster_special_type_id;
-        $card->monster_type_id = $request->monster_type_id;
-        $card->pendulum = $request->pendulum;
-        $card->atk = $request->atk;
-        $card->def = $request->def;
-        $card->spell_type_id = $request->spell_type_id;
-        $card->trap_type_id = $request->trap_type_id;
-        $card->level = $request->level;
-        $card->price = $request->price;
-        $card->card_type_id = $request->card_type_id;
 
         if ($file = $request->file("photo_id")) {
             $path = request()
@@ -213,7 +146,7 @@ class AdminCardController extends Controller
         $monsterTypes = MonsterType::all();
         $spellTypes = SpellType::all();
         $trapTypes = TrapType::all();
-        return view('admin.cards.edit',compact('cardTypes', 'monsterClasses', 'monsterAttributes', 'monsterSpecialTypes', 'monsterTypes', 'spellTypes', 'trapTypes','card'));
+        return view('admin.cards.edit', compact('cardTypes', 'monsterClasses', 'monsterAttributes', 'monsterSpecialTypes', 'monsterTypes', 'spellTypes', 'trapTypes', 'card'));
     }
 
     /**
@@ -223,101 +156,8 @@ class AdminCardController extends Controller
      * @param int $id
      * @return \Illuminate\Http\RedirectResponse
      */
-    public function update(Request $request, $id)
+    public function update(CardUpdateRequest $request, $id)
     {
-        request()->validate([
-            'name' => ['required', 'between:1,255', Rule::unique('cards')->ignore($id)],
-            'price' => ['required', 'numeric', 'min:0.01', 'regex:/^\d+(,\d{1,2})?(\.\d{1,2})?$/'],
-            'description' => ['required'],
-            'atk' => [
-                Rule::requiredIf(function () use ($request) {
-                    return $request->input('card_type_id') === '1';
-                }),
-                'nullable',
-                'min:0',
-                'regex:/^\d+$|^\?$/',
-            ],
-            'def' => [
-                Rule::requiredIf(function () use ($request) {
-                    return $request->input('card_type_id') === '1';
-                }),
-                'nullable',
-                'min:0',
-                'regex:/^\d+$|^\?$/',
-            ],
-            'level' => [
-                Rule::requiredIf(function () use ($request) {
-                    return $request->input('card_type_id') === '1';
-
-                }),
-
-                'nullable',
-                'numeric',
-                'min:0',
-                function ($attribute, $value, $fail) use ($request) {
-                    if ($request->input('monster_class_id') === '7' && $value > 8) {
-                        $fail('The max value for Level when Monster Class is selected is 8.');
-                    } elseif ($value > 13) {
-                        $fail('The max value for Level is 13.');
-                    }
-                },
-            ],
-            'monster_attribute_id' => [
-                Rule::requiredIf(function () use ($request) {
-                    return $request->input('card_type_id') === '1';
-                }),
-                'nullable',
-            ],
-            'monster_class_id' => [
-                Rule::requiredIf(function () use ($request) {
-                    return $request->input('card_type_id') === '1';
-                }),
-                'nullable',
-            ],
-            'monster_type_id' => [
-                Rule::requiredIf(function () use ($request) {
-                    return $request->input('card_type_id') === '1';
-                }),
-                'nullable',
-            ],
-            'spell_type_id' => [
-                Rule::requiredIf(function () use ($request) {
-                    return $request->input('card_type_id') === '2';
-                }),
-                'nullable',
-            ],
-            'trap_type_id' => [
-                Rule::requiredIf(function () use ($request) {
-                    return $request->input('card_type_id') === '3';
-                }),
-                'nullable',
-            ],
-
-        ],
-            [
-                'name.required' => 'Name is required',
-                'name.between' => 'Name between 5 and 255 characters required',
-                'name.unique' => 'Name must be unique',
-                'price.required' => 'Price is required',
-                'price.numeric' => 'Price can only be a number',
-                'price.regex' => 'test',
-                'description' => 'Description is required',
-                'atk.required' => 'ATK is required for monster cards',
-                'atk.regex' => 'ATK must be a number or a ?',
-                'atk.min'=> 'ATK must be minimum of 0',
-                'def.required' => 'DEF is required for monster cards',
-                'def.regex' => 'DEF must be a number or a ?',
-                'def.min'=> 'DEF must be minimum of 0',
-                'level.required' => 'level is required for monster cards',
-                'level.numeric' => 'level must be a number',
-                'level.min'=> 'level must be minimum of 0',
-                'level.max'=> 'level must be maximum of 13',
-                'monster_attribute_id.required' => 'monster attribute is required for monster cards',
-                'monster_class_id.required' => 'monster class is required for monster cards',
-                'monster_type_id.required' => 'monster type is required for monster cards',
-                'spell_type_id.required' => 'Spell type is required for spell cards',
-                'trap_type_id.required' => 'Trap type is required for trap cards',
-            ]);
         $card = Card::findOrFail($id);
 
         $input['name'] = $request->name;
@@ -325,7 +165,7 @@ class AdminCardController extends Controller
         $input['price'] = $request->price;
         $input['card_type_id'] = $request->card_type_id;
 
-        if ($request->card_type_id == 1){
+        if ($request->card_type_id == 1) {
             $input['atk'] = $request->atk;
             $input['def'] = $request->def;
             $input['level'] = $request->level;
@@ -336,7 +176,7 @@ class AdminCardController extends Controller
             $input['monster_attribute_id'] = $request->monster_attribute_id;
             $input['spell_type_id'] = null;
             $input['trap_type_id'] = null;
-        }elseif ($request->card_type_id == 2){
+        } elseif ($request->card_type_id == 2) {
             $input['atk'] = null;
             $input['def'] = null;
             $input['level'] = null;
@@ -347,7 +187,7 @@ class AdminCardController extends Controller
             $input['monster_attribute_id'] = null;
             $input['spell_type_id'] = $request->spell_type_id;
             $input['trap_type_id'] = null;
-        }elseif($request->card_type_id == 3){
+        } elseif ($request->card_type_id == 3) {
             $input['atk'] = null;
             $input['def'] = null;
             $input['level'] = null;
@@ -360,7 +200,7 @@ class AdminCardController extends Controller
             $input['trap_type_id'] = $request->trap_type_id;
         }
 
-        $input['slug'] =  Str::slug($request->name,'-');
+        $input['slug'] = Str::slug($request->name, '-');
         // oude foto verwijderen
         //we kijken eerst of er een foto bestaat
         if ($request->hasFile('photo_id')) {
@@ -369,9 +209,9 @@ class AdminCardController extends Controller
             if ($oldPhoto) {
                 unlink(public_path($oldPhoto->file));
                 // $oldPhoto->delete();
-                $oldPhoto->update(['file'=>$path]);
+                $oldPhoto->update(['file' => $path]);
                 $input['photo_id'] = $oldPhoto->id;
-            }else{
+            } else {
                 $photo = Photo::create(['file' => $path]);
                 $input['photo_id'] = $photo->id;
             }
@@ -397,12 +237,21 @@ class AdminCardController extends Controller
     {
         $card = Card::findOrFail($id);
         $card->delete();
-        return redirect()->route('cards.index')->with('status', 'Card deleted!');
+        return redirect()->route('cards.index')->with([
+            'alert' => [
+                'message' => 'Card Deleted',
+                'type' => 'danger'
+            ]]
+        );
     }
 
     public function cardRestore($id)
     {
         Card::onlyTrashed()->where('id', $id)->restore();
-        return redirect()->route('cards.index')->with('status', 'Card restored!');
+        return redirect()->route('cards.index')->with([
+            'alert' => [
+                'message' => 'Card Restored',
+                'type' => 'success'
+            ]]);
     }
 }

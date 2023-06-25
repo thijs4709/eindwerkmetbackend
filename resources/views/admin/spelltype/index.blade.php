@@ -4,7 +4,6 @@
         <div class="d-flex">
             <p class="rounded bg-danger m-0 d-flex align-self-center p-2 text-white">{{$spellTypes->total()}}</p>
             <h1 class="m-0">| Spell types</h1>
-            <a href="{{route('spelltype.index')}}" class="btn btn-primary m-2 rounded-pill">All Spell types</a>
         </div>
         <a href="{{route('spelltype.create')}}" class="btn btn-primary m-2 rounded-pill">Add Spell types</a>
     </div>
@@ -96,7 +95,7 @@
         @endforeach
         </tbody>
     </table>
-    {{ $spellTypes->appends(['search' => Request::get('search'), 'fields' => Request::get('fields')])->links() }}
+    {{ $spellTypes->links() }}
 
 @endsection
 

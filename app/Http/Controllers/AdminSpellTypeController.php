@@ -127,10 +127,18 @@ class AdminSpellTypeController extends Controller
     {
         $spellType = SpellType::findOrFail($id);
         $spellType->delete();
-        return redirect()->route('spelltype.index')->with('status', 'Spell type deleted!');
+        return redirect()->route('spelltype.index')->with([
+            'alert' => [
+                'message' => 'Spell Type Deleted',
+                'type' => 'danger'
+            ]]);
     }
     public function spellTypeRestore($id){
         SpellType::onlyTrashed()->where('id', $id)->restore();
-        return redirect()->route('spelltype.index')->with('status', 'Spell type restored!');
+        return redirect()->route('spelltype.index')->with([
+            'alert' => [
+                'message' => 'Spell Type Restored',
+                'type' => 'success'
+            ]]);
     }
 }

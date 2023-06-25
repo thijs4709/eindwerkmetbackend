@@ -127,10 +127,18 @@ class AdminMonsterAttributeController extends Controller
     {
         $monsterAttribute = MonsterAttribute::findOrFail($id);
         $monsterAttribute->delete();
-        return redirect()->route('monsterattribute.index')->with('status', 'Monster Attribute deleted!');
+        return redirect()->route('monsterattribute.index')->with([
+            'alert' => [
+                'message' => 'Monster Attribute Deleted',
+                'type' => 'danger'
+            ]]);
     }
     public function monsterAttributeRestore($id){
         MonsterAttribute::onlyTrashed()->where('id', $id)->restore();
-        return redirect()->route('monsterattribute.index')->with('status', 'Monster attribute restored!');
+        return redirect()->route('monsterattribute.index')->with([
+            'alert' => [
+                'message' => 'Monster Attribute Restored',
+                'type' => 'success'
+            ]]);
     }
 }
