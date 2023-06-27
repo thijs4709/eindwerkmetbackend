@@ -40,6 +40,7 @@
                 </button>
             </div>
             <div class="collapse navbar-collapse" id="navbarSupportedContent">
+{{--                todo search functionaliteit maken als ti--}}
                 <form class="d-flex w-100 my-2" role="search">
                     <input aria-label="Search" class="form-control me-2" placeholder="Search" type="search">
                     <button class="btn btn-outline-success" type="submit">Search</button>
@@ -123,13 +124,13 @@
                                     <div class="col-6 col-md-6 col-lg-4">
                                         <div class="d-flex">
                                             <img src="{{$item['product_image']}}" alt="{{$item['product_name']}}"
-                                                 class="img-fluid">
+                                                 class="img-fluid py-3">
                                             <div class="ms-3">
-                                                <a href="../pages/shop-single.html"
+                                                <a href="{{route("shop_detail_box", $item['product']->slug)}}"
                                                    class="text-dark text-decoration-none">
                                                     <h6 class="mb-0">{{$item['product_name']}} </h6>
                                                 </a>
-                                                <div class="mt-2 small lh-1">
+                                                <div class="small">
                                                     <a href="{{route('removeItem', $item['product_id'])}}"
                                                        class="text-decoration-none d-flex">
                                         <span class="me-1 align-text-center">

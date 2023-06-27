@@ -199,3 +199,9 @@ footer {
     font-size: 0.875rem;
 }
 
+/*shop*/
+
+#shop :hover {
+    color: var(--main-color);
+    border-color: var(--main-color);
+}

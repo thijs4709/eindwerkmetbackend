@@ -6,9 +6,15 @@ namespace App\Http\Controllers;
 use App\Models\Box;
 use App\Models\Card;
 use App\Models\Cart;
+use App\Models\MonsterAttribute;
+use App\Models\MonsterClass;
+use App\Models\MonsterType;
 use App\Models\Order;
 
+use App\Models\SpellType;
+use App\Models\TrapType;
 use Illuminate\Http\Request;
+use Illuminate\Pagination\LengthAwarePaginator;
 use Illuminate\Support\Facades\Session;
 use Stripe\Stripe;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
@@ -17,19 +23,80 @@ class HomeController extends Controller
 {
     public function index()
     {
+        $spellTypes = SpellType::select('id')->get();
+        $trapTypes = TrapType::select('id')->get();
+        $monsterTypes = MonsterType::select('id')->get();
         $boxes = Box::query()->orderByDesc('created_at')->with('photo')->limit(6)->get();
-        $cards = Card::query()->orderByDesc('created_at')->with('photo')->limit(6)->get();
-        return view("home", compact("boxes", "cards"));
+        return view("home", compact("boxes","spellTypes","trapTypes","monsterTypes"));
     }
 
-    public function shop()
+    public function shop(Request $request)
     {
-        return view("shop");
+        $boxes = Box::query()->orderByDesc('created_at')->with('photo')->paginate(12);
+        $monsterClasses = MonsterClass::select('id', 'name')->get();
+        $monsterTypes = MonsterType::select('id', 'name')->get();
+        $monsterAttributes = MonsterAttribute::select('id', 'name')->get();
+        $spellTypes = SpellType::select('id', 'name')->get();
+        $trapTypes = TrapType::select('id', 'name')->get();
+        $filterOptionMonsterType = $request->input('filter_monster_type');
+        $filterOptionMonsterClass = $request->input('filter');
+        $filterOptionMonsterAttribute = $request->input('filter_attribute');
+        $filterOptionSpellType = $request->input('filter_spell');
+        $filterOptionTrapType = $request->input('filter_trap');
+
+        $cards = Card::query()
+            ->when($filterOptionMonsterType, function ($query) use ($filterOptionMonsterType) {
+                $query->where('monster_type_id', $filterOptionMonsterType);
+            })
+            ->when($filterOptionMonsterClass, function ($query)use($filterOptionMonsterClass){
+                $query->whereIn('monster_class_id', $filterOptionMonsterClass);
+            })
+            ->when($filterOptionMonsterAttribute, function ($query)use($filterOptionMonsterAttribute){
+                $query->where('monster_attribute_id', $filterOptionMonsterAttribute);
+            })
+            ->when($filterOptionSpellType, function ($query)use($filterOptionSpellType){
+                $query->whereIn('spell_type_id', $filterOptionSpellType);
+            })
+            ->when($filterOptionTrapType, function ($query)use($filterOptionTrapType){
+                $query->whereIn('trap_type_id', $filterOptionTrapType);
+            })
+            ->orderByDesc('created_at')
+            ->with('photo')
+            ->paginate(12);
+        return view("shop", compact('boxes', 'cards', 'monsterTypes','monsterClasses','filterOptionMonsterType','filterOptionMonsterClass','filterOptionMonsterAttribute','monsterAttributes','spellTypes','trapTypes','filterOptionSpellType','filterOptionTrapType'));
     }
 
-    public function shop_detail()
+    public function filter(Request $request)
     {
-        return view("shop_detail");
+        $monsterTypes = MonsterType::select('id', 'name')->get();
+        $boxes = Box::query()->orderByDesc('created_at')->with('photo')->paginate(12);
+        $filterOptionMonsterClass = $request->input('filter');
+        $filterOptionPendulum = $request->input('filter_pendulum');
+
+        $filterOptionMonsterSpecialType = $request->input('filter_monster_special_type');
+        $filterOptionMonsterAttribute = $request->input('filter_attribute');
+        $filterOptionMonsterLevel = $request->input('filter_level');
+        $filterOptionAtkLow = [$request->input('filter_atk_low')];
+        $filterOptionAtkHigh = [$request->input('filter_atk_high')];
+        $filterOptionDefLow = [$request->input('filter_def_low')];
+        $filterOptionDefHigh = [$request->input('filter_def_high')];
+
+
+        //als de waarde null is moet hij op 0 staan omdat dit een boolean is
+        if ($filterOptionPendulum === null) {
+            $filterOptionPendulum = ["0"];
+        }
+
+    }
+
+    public function shop_detail_card(Card $card)
+    {
+        return view("shop_detail_card", compact('card'));
+    }
+
+    public function shop_detail_box(Box $box)
+    {
+        return view("shop_detail_box", compact('box'));
     }
 
     public function order_received()
@@ -100,7 +167,6 @@ class HomeController extends Controller
     {
         \Stripe\Stripe::setApiKey(env('STRIPE_SECRET_KEY'));
         $sessionId = $request->get('session_id');
-
         try {
             $session = \Stripe\Checkout\Session::retrieve($sessionId);
             if (!$session) {
@@ -117,6 +183,7 @@ class HomeController extends Controller
             }
             if ($order->status === 'unpaid') {
                 $order->status = 'paid';
+                $order->session_id = $session->payment_intent;
                 $order->save();
             }
 
@@ -166,10 +233,10 @@ class HomeController extends Controller
                 $order = Order::where('session_id', $session->id)->first();
                 if ($order && $order->status === 'unpaid') {
                     $order->status = 'paid';
+                    $order->session_id = $session->payment_intent;
                     $order->save();
                     //send email to customer
                 }
-
             // ... handle other event types
             default:
                 echo 'Received unknow event type ' . $event->type;

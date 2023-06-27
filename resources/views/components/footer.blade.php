@@ -52,11 +52,11 @@
             <div class="col-12 px-0 d-lg-flex align-items-center justify-content-between">
                 <p class="mb-3">Copyright 2022 © Yugi's Cart All rights reserved.</p>
                 <p>Follow us on:
-                    <a class="text-grey border border-grey rounded mx-2" href="https://www.facebook.com/"><i
+                    <a target=”_blank” class="text-grey border border-grey rounded mx-2" href="https://www.facebook.com/"><i
                             class="bi bi-facebook p-1"></i></a>
-                    <a class="text-grey border border-grey rounded me-2" href="https://twitter.com/"><i
+                    <a target=”_blank” class="text-grey border border-grey rounded me-2" href="https://twitter.com/"><i
                             class="bi bi-twitter p-1"></i></a>
-                    <a class="text-grey border border-grey rounded" href="https://www.instagram.com/"><i
+                    <a target=”_blank” class="text-grey border border-grey rounded" href="https://www.instagram.com/"><i
                             class="bi bi-instagram p-1"></i></a>
                 </p>
             </div>
@@ -70,6 +70,6 @@
 <script crossorigin="anonymous" integrity="sha384-OERcA2EqjJCMA+/3y+gxIOqMEjwtxJY7qPCqsdltbNJuaOe923+mo//f6V8Qbsw3"
         src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.2/dist/js/bootstrap.bundle.min.js"></script>
 <script src="{{asset("js/index.js")}}"></script>
-
 </body>
 </html>
+
