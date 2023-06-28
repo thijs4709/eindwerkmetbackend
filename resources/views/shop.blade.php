@@ -3,8 +3,9 @@
 <main class="container-fluid col-12 col-lg-10 offset-lg-1">
     <div class="row">
         <!--filter-->
-        <aside class="col-lg-3 ">
+        <aside class="col-lg-3 d-lg-block d-none z-10">
             <form action="{{route("shop")}}" method="GET">
+                @csrf
                 <div id="monster">
                     <header>
                         <h2>monster</h2>
@@ -13,9 +14,9 @@
                         <p>Monster Class</p>
                         @foreach($monsterClasses as $monsterClass)
                             <div class="form-check">
-                                <input name="filter[]" @if(!($filterOptionMonsterClass === null)) {{in_array($monsterClass->id,$filterOptionMonsterClass) ? "checked" : ""}}@endif value="{{$monsterClass->id}}" class="form-check-input" id="{{$monsterClass->name}}"
+                                <input name="filter[]" @if(!($filterOptionMonsterClass === null) && in_array($monsterClass->id,$filterOptionMonsterClass)) checked  @endif value="{{$monsterClass->id}}" class="form-check-input" id="{{$monsterClass->name}}"
                                        type="checkbox">
-                                <label class="form-check-label" for="{{$monsterClass->id}}">{{$monsterClass->name}} Monster</label>
+                                <label class="form-check-label" for="{{$monsterClass->name}}">{{$monsterClass->name}} Monster</label>
                             </div>
                         @endforeach
 <!--                        <div class="form-check">
@@ -96,8 +97,8 @@
                     </header>
                     @foreach($spellTypes as $spellType)
                     <div class="form-check">
-                        <input name="filter_spell[]"  value="{{$spellType->id}}" @if(!($filterOptionSpellType === null)) {{in_array($spellType->id,$filterOptionSpellType) ? "checked" : ""}}@endif class="form-check-input" id="{{$spellType->id}}" type="checkbox">
-                        <label class="form-check-label" for="{{$spellType->id}}">{{$spellType->name}}</label>
+                        <input name="filter_spell[]"  value="{{$spellType->id}}" @if(!($filterOptionSpellType === null)) {{in_array($spellType->id,$filterOptionSpellType) ? "checked" : ""}}@endif class="form-check-input" id="{{$spellType->name."spell"}}" type="checkbox">
+                        <label class="form-check-label" for="{{$spellType->name."spell"}}">{{$spellType->name}}</label>
                     </div>
                     @endforeach
                 </div>
@@ -107,8 +108,8 @@
                     </header>
                     @foreach($trapTypes as $trapType)
                     <div class="form-check">
-                        <input name="filter_trap[]" value="{{$trapType->id}}" @if(!($filterOptionTrapType === null)) {{in_array($trapType->id,$filterOptionTrapType) ? "checked" : ""}}@endif class="form-check-input" id="{{$trapType->id}}" type="checkbox">
-                        <label class="form-check-label" for="{{$trapType->id}}">{{$trapType->name}}</label>
+                        <input name="filter_trap[]" value="{{$trapType->id}}" @if(!($filterOptionTrapType === null)) {{in_array($trapType->id,$filterOptionTrapType) ? "checked" : ""}}@endif class="form-check-input" id="{{$trapType->name."trap"}}" type="checkbox">
+                        <label class="form-check-label" for="{{$trapType->name."trap"}}">{{$trapType->name}}</label>
                     </div>
                     @endforeach
                 </div>
@@ -122,16 +123,17 @@
             <header class="bg-secondary py-4 ps-4">
                 <h2>Yu-Gi-Oh Cards!</h2>
             </header>
-            <div class="my-2 d-lg-flex justify-content-between align-items-center">
+            <div class="mx-4 mx-lg-0 my-2 d-lg-flex justify-content-between align-items-center">
                 <p><span>{{count($boxes)}}</span> Boxes Found, <span>{{ $cards->total() }}</span> Cards Found</p>
                 <div class="d-lg-flex align-items-center">
                     <select class="form-select me-2" name="show-items" id="show-items">
-                        <option value="cards">cards</option>
+                        <option value="cards" >cards</option>
                         <option value="boxes">boxes</option>
                     </select>
                 </div>
+                <button id="show-aside-btn" class="d-lg-none btn bg-green mt-2">Show Filters</button>
             </div>
-            <div id="shop">
+            <div id="shop" class="mx-4 mx-lg-0">
                 <div class="boxes-links d-none row g-4 my-2">
                     @foreach($boxes as $box)
                         <div class="col-xl-3 col-lg-4 col-md-6">
@@ -226,10 +228,34 @@
                 cardsLinks[i].classList.remove("d-none");
             }
         }
-        console.log(selectElement.value, "test");
     }
 
     // Add event listener to call handleSelection when selection changes
     document.getElementById("show-items").addEventListener("change", handleSelection);
+
+    // Retrieve the selected option from local storage
+    let selectedOption = localStorage.getItem('selectedOption');
+
+    // Set the selected option in the <select> element
+    if (selectedOption) {
+        document.getElementById('show-items').value = selectedOption;
+        handleSelection(); // Call the function to show the appropriate links
+    }
+
+    // Event listener to capture the change event
+    document.getElementById('show-items').addEventListener('change', function() {
+        let selectedValue = this.value;
+
+        // Store the selected option in local storage
+        localStorage.setItem('selectedOption', selectedValue);
+
+        handleSelection(); // Call the function to show the appropriate links
+    });
+
+    // sho/hide de aside
+    document.getElementById("show-aside-btn").addEventListener("click", function() {
+        let asideElement = document.querySelector("aside");
+        asideElement.classList.toggle("d-none");
+    });
 </script>
 

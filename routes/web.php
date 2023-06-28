@@ -32,6 +32,9 @@ use Illuminate\Support\Facades\Route;
 //});
 Route::get('/', [HomeController::class, 'index'])->name('home_frontend');
 Route::get('/shop', [HomeController::class, 'shop'])->name('shop');
+
+Route::get('/search', [HomeController::class, 'search'])->name('search');
+
 Route::get('/shop_detail_card/{card:slug}', [HomeController::class, 'shop_detail_card'])->name('shop_detail_card');
 Route::get('/shop_detail_box/{box:slug}', [HomeController::class, 'shop_detail_box'])->name('shop_detail_box');
 Route::post('/order_received', [HomeController::class, 'order_received'])->name('order_received');

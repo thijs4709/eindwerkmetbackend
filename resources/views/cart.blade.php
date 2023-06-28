@@ -2,12 +2,15 @@
 
 <main class="container-fluid col-12 col-lg-10 offset-lg-1">
     <section>
-        <div class="my-4">
+        <div class="my-5">
             <header>
                 <h2>Shop Cart</h2>
             </header>
         </div>
-        <div class="row mb-5">
+        @if(!auth()->check())
+            <h3 class="text-grey mb-3 text-danger fw-bold fw">You must have an accout to pay for your order.</h3>
+        @endif
+        <div class="row my-5">
             <div class="col-12  col-xl-8">
                 <ul class="list-group list-group-flush">
                     @foreach($cart as $item)
@@ -67,6 +70,7 @@
                             <p>item Subtotal</p>
                             <p>{{Session::has('cart') ? Session::get('cart')->totalPrice:'0'}} &euro;</p>
                         </div>
+                        @auth()
                         <div class="py-2 px-3">
                             <div class="btn bg-green  d-flex rounded-4 justify-content-between align-items-center">
                                 <a href="{{route("checkout")}}" class="text-white text-decoration-none"> Go to Checkout</a>
@@ -74,6 +78,7 @@
                                     {{Session::has('cart') ? Session::get('cart')->totalPrice:'0'}} &euro;</p>
                             </div>
                         </div>
+                        @endauth
 
                     </div>
 

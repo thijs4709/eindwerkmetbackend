@@ -25,9 +25,15 @@
             </a>
             <div class="d-flex align-items-center">
                 <div class="d-lg-none">
-                    <a href="#" class="text-reset" data-bs-toggle="modal" data-bs-target="#userModal">
-                        <i class="bi bi-person-circle me-1"></i>
-                    </a>
+                    @if(auth()->check())
+                        <a href="#" class="text-reset" data-bs-toggle="modal" data-bs-target="#logoutModal">
+                            <i class="bi bi-person-circle me-1"></i>
+                        </a>
+                    @else
+                        <a href="#" class="text-reset" data-bs-toggle="modal" data-bs-target="#userModal">
+                            <i class="bi bi-person-circle me-1"></i>
+                        </a>
+                    @endif
                     <a class="text-dark" data-bs-toggle="offcanvas" data-bs-target="#offcanvasRight"
                        href="#offcanvasExample" role="button" aria-controls="offcanvasRight">
                         <i class="bi bi-bag-check me-2"></i>
@@ -41,8 +47,8 @@
             </div>
             <div class="collapse navbar-collapse" id="navbarSupportedContent">
 {{--                todo search functionaliteit maken als ti--}}
-                <form class="d-flex w-100 my-2" role="search">
-                    <input aria-label="Search" class="form-control me-2" placeholder="Search" type="search">
+                <form action="{{ url('search') }}" method="get" class="d-flex w-100 my-2" role="search">
+                    <input typeof="search" aria-label="Search" class="form-control me-2" placeholder="Search cards" value="" name="search" >
                     <button class="btn btn-outline-success" type="submit">Search</button>
                 </form>
                 <ul class="navbar-nav me-auto mb-2 mb-lg-0 d-lg-none">
@@ -60,9 +66,15 @@
                     </li>
                 </ul>
                 <div class="d-none d-lg-block w-50 d-lg-flex justify-content-end">
-                    <a href="#" class="text-reset" data-bs-toggle="modal" data-bs-target="#userModal">
-                        <i class="bi bi-person-circle me-1"></i>
-                    </a>
+                    @if(auth()->check())
+                        <a href="#" class="text-reset d-flex" data-bs-toggle="modal" data-bs-target="#logoutModal">
+                            @auth()  <p class="me-1">{{ auth()->user()->name }}</p> @endauth <i class="bi bi-person-circle me-1"></i>
+                        </a>
+                    @else
+                        <a href="#" class="text-reset d-flex" data-bs-toggle="modal" data-bs-target="#userModal">
+                          <i class="bi bi-person-circle me-1"></i>
+                        </a>
+                    @endif
                     <a class="text-dark" data-bs-toggle="offcanvas" data-bs-target="#offcanvasRight"
                        href="#offcanvasExample" role="button" aria-controls="offcanvasRight">
                         <i class="bi bi-bag-check me-2"></i>
@@ -71,7 +83,7 @@
             </div>
         </div>
     </nav>
-    <!--model-->
+    <!--model register-->
     <div class="modal fade" id="userModal" tabindex="-1" aria-labelledby="userModalLabel" style="display: none;" aria-hidden="true">
         <div class="modal-dialog modal-dialog-centered">
             <div class="modal-content p-4">
@@ -80,30 +92,117 @@
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
                 <div class="modal-body">
-                    <form>
+                    <form method="POST" action="{{ route('register') }}">
+                        @csrf
                         <div class="mb-3">
-                            <label for="fullName" class="form-label">Name</label>
-                            <input type="text" class="form-control" id="fullName" placeholder="Enter Your Name" required="">
+                            <label for="name" class="form-label">Name</label>
+                            <input id="name" type="text" class="form-control @error('name') is-invalid @enderror" name="name" value="{{ old('name') }}" required
+                                   autocomplete="name" placeholder="name" autofocus>
+                            @error('name')
+                            <span class="invalid-feedback" role="alert">
+                                        <strong>{{ $message }}</strong>
+                                    </span>
+                            @enderror
                         </div>
                         <div class="mb-3">
                             <label for="email" class="form-label">Email address</label>
-                            <input type="email" class="form-control" id="email" placeholder="Enter Email address" required="">
+                            <input id="email" type="email" class="form-control @error('email') is-invalid @enderror" name="email" value="{{ old('email') }}" required
+                                   autocomplete="email" placeholder="test@gmail.com">
+                            @error('email')
+                            <span class="invalid-feedback" role="alert">
+                                        <strong>{{ $message }}</strong>
+                                    </span>
+                            @enderror
+                        </div>
+                        <div class="mb-3">
+                            <label for="password" class="form-label">Password</label>
+                            <input id="password" type="password" class="form-control @error('password') is-invalid @enderror" name="password" required
+                                   autocomplete="new-password">
+                            @error('password')
+                            <span class="invalid-feedback" role="alert">
+                                        <strong>{{ $message }}</strong>
+                                    </span>
+                            @enderror
                         </div>
                         <div class="mb-5">
-                            <label for="password" class="form-label">Password</label>
-                            <input type="password" class="form-control" id="password" placeholder="Enter Password" required="">
+                            <label for="password-confirm" class="form-label">Password Confirm</label>
+                            <input id="password-confirm" type="password" class="form-control" name="password_confirmation" required autocomplete="new-password">
                         </div>
-                        <button type="submit" class="btn btn-primary">Sign Up</button>
+                        <button type="submit" class="btn bg-green text-white">Sign Up</button>
                     </form>
                 </div>
                 <div class="modal-footer border-0 justify-content-center">
-                    Already have an account? <a href="#">Sign in</a>
+                    Already have an account? <a class="text-green" href="#" data-bs-dismiss="modal" data-bs-toggle="modal" data-bs-target="#loginModal">Sign in</a>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!--model login-->
+    <div class="modal fade" id="loginModal" tabindex="-1" aria-labelledby="loginModalLabel" style="display: none;" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content p-4">
+                <div class="modal-header border-0">
+                    <h5 class="modal-title fs-3 fw-bold" id="loginModalLabel">Sign In</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <!-- Login Form -->
+                    <form method="POST" action="{{ route('login') }}">
+                        @csrf
+                        <div class="mb-3">
+                            <label for="email" class="form-label">Email address</label>
+                            <input id="email" type="email" class="form-control @error('email') is-invalid @enderror" name="email" value="{{ old('email') }}" required autocomplete="email" autofocus placeholder="test@gmail.com">
+                            @error('email')
+                            <span class="invalid-feedback" role="alert">
+                            <strong>{{ $message }}</strong>
+                        </span>
+                            @enderror
+                        </div>
+                        <div class="mb-5">
+                            <label for="password" class="form-label">Password</label>
+                            <input id="password" type="password" class="form-control @error('password') is-invalid @enderror" name="password" required autocomplete="current-password">
+                            @error('password')
+                            <span class="invalid-feedback" role="alert">
+                            <strong>{{ $message }}</strong>
+                        </span>
+                            @enderror
+                        </div>
+                        <button type="submit" class="btn bg-green text-white">Sign In</button>
+                    </form>
+                </div>
+                <div class="modal-footer border-0 justify-content-center">
+                    Don't have an account? <a class="text-green" href="#" data-bs-dismiss="modal" data-bs-toggle="modal" data-bs-target="#userModal">Sign Up</a>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!--model logout-->
+    <div class="modal fade" id="logoutModal" tabindex="-1" aria-labelledby="logoutModalLabel" style="display: none;" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content p-4">
+                <div class="modal-header border-0">
+                    <h5 class="modal-title fs-3 fw-bold" id="loginModalLabel">Log out</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <div class="modal-content">
+                        <div class="modal-footer">
+                            <a class="btn bg-green text-white" href="#" onclick="event.preventDefault();
+                   document.getElementById('logout-form').submit();">
+                                Logout
+                            </a>
+                            <form id="logout-form" action="{{route('logout')}}" method="POST" class="d-none">
+                                @csrf
+                               {{-- <input type="hidden" name="_token" value="Oyn3k7qWakfH79Uq4tNeARTz7CppB0IGw7YWae4k">--}}
+                            </form>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
     </div>
     <!--  sidebar cart  -->
-    <div class="offcanvas offcanvas-end show" tabindex="-1" id="offcanvasRight" aria-labelledby="offcanvasRightLabel"
+    <div class="offcanvas offcanvas-end " tabindex="-1" id="offcanvasRight" aria-labelledby="offcanvasRightLabel"
          aria-modal="true" role="dialog">
         <div class="offcanvas-header border-bottom">
             <div class="text-start">

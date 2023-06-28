@@ -1,5 +1,4 @@
 <x-header></x-header>
-
 <main class="container-fluid col-12 col-lg-10 offset-lg-1">
     <section class="my-5" id="section1">
         <div class="row">

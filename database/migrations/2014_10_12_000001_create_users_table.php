@@ -19,7 +19,8 @@ return new class extends Migration {
             $table->string("email")->unique();
             $table->timestamp("email_verified_at")->nullable();
             $table->string("photo_id")->default("");
-            $table->string("password")->nullable()->default("NULL");
+            $table->foreignId('delivery_id')->nullable()->unsigned()->constrained()->cascadeOnDelete();
+            $table->string("password")->nullable();
             $table->rememberToken();
             $table->timestamps();
             $table->softDeletes();

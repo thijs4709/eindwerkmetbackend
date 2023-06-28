@@ -43,7 +43,7 @@
             </div>
         </div>
 
-        <div class="row">
+        <div class="row mb-5">
             <div class="col-12 border-top border-bottom py-3 px-0 my-3">
                 <p class="text-dark">Payment Partners:<i class="fa-brands fa-paypal mx-2"></i><i
                         class="fa-brands fa-cc-amazon-pay me-2"></i><i class="fa-brands fa-cc-visa me-2"></i><i

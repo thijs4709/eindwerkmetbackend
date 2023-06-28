@@ -32,7 +32,7 @@ class HomeController extends Controller
 
     public function shop(Request $request)
     {
-        $boxes = Box::query()->orderByDesc('created_at')->with('photo')->paginate(12);
+        $boxes = Box::query()->orderByDesc('created_at')->with('photo')->paginate(12)->withQueryString();
         $monsterClasses = MonsterClass::select('id', 'name')->get();
         $monsterTypes = MonsterType::select('id', 'name')->get();
         $monsterAttributes = MonsterAttribute::select('id', 'name')->get();
@@ -62,31 +62,39 @@ class HomeController extends Controller
             })
             ->orderByDesc('created_at')
             ->with('photo')
-            ->paginate(12);
+            ->paginate(12)
+            ->withQueryString();
         return view("shop", compact('boxes', 'cards', 'monsterTypes','monsterClasses','filterOptionMonsterType','filterOptionMonsterClass','filterOptionMonsterAttribute','monsterAttributes','spellTypes','trapTypes','filterOptionSpellType','filterOptionTrapType'));
     }
-
-    public function filter(Request $request)
+    public function search(Request $request)
     {
+        $monsterClasses = MonsterClass::select('id', 'name')->get();
         $monsterTypes = MonsterType::select('id', 'name')->get();
-        $boxes = Box::query()->orderByDesc('created_at')->with('photo')->paginate(12);
+        $monsterAttributes = MonsterAttribute::select('id', 'name')->get();
+        $spellTypes = SpellType::select('id', 'name')->get();
+        $trapTypes = TrapType::select('id', 'name')->get();
+        $filterOptionMonsterType = $request->input('filter_monster_type');
         $filterOptionMonsterClass = $request->input('filter');
-        $filterOptionPendulum = $request->input('filter_pendulum');
-
-        $filterOptionMonsterSpecialType = $request->input('filter_monster_special_type');
         $filterOptionMonsterAttribute = $request->input('filter_attribute');
-        $filterOptionMonsterLevel = $request->input('filter_level');
-        $filterOptionAtkLow = [$request->input('filter_atk_low')];
-        $filterOptionAtkHigh = [$request->input('filter_atk_high')];
-        $filterOptionDefLow = [$request->input('filter_def_low')];
-        $filterOptionDefHigh = [$request->input('filter_def_high')];
-
-
-        //als de waarde null is moet hij op 0 staan omdat dit een boolean is
-        if ($filterOptionPendulum === null) {
-            $filterOptionPendulum = ["0"];
+        $filterOptionSpellType = $request->input('filter_spell');
+        $filterOptionTrapType = $request->input('filter_trap');
+        if ($request->search){
+            $cards = Card::query()
+                ->where('name','LIKE','%'.$request->search.'%')
+                ->orderByDesc('created_at')
+                ->with('photo')
+                ->paginate(12)
+                ->withQueryString();
+            $boxes = Box::query()
+                ->where('name','LIKE','%'.$request->search.'%')
+                ->orderByDesc('created_at')
+                ->with('photo')
+                ->paginate(12)
+                ->withQueryString();
+            return view("shop", compact('boxes', 'monsterTypes','monsterClasses','filterOptionMonsterType','filterOptionMonsterClass','filterOptionMonsterAttribute','monsterAttributes','spellTypes','trapTypes','filterOptionSpellType','filterOptionTrapType','cards'));
+        }else{
+            return redirect()->back();
         }
-
     }
 
     public function shop_detail_card(Card $card)
@@ -186,7 +194,7 @@ class HomeController extends Controller
                 $order->session_id = $session->payment_intent;
                 $order->save();
             }
-
+            Session::forget('cart');
             return view('order_received', compact('customer'));
 
         } catch (\Exception $e) {
@@ -237,6 +245,7 @@ class HomeController extends Controller
                     $order->save();
                     //send email to customer
                 }
+
             // ... handle other event types
             default:
                 echo 'Received unknow event type ' . $event->type;
