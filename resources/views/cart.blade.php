@@ -38,14 +38,19 @@
                                 </div>
 
                                 <div class="col-12 col-md-5 col-lg-5 py-4 py-lg-0">
-                                    <div class="input-group ">
+                                    <div class="input-group">
                                         <form method="post" action="{{route('quantity')}}" enctype="multipart/form-data">
                                             @csrf
                                             @method('POST')
-                                            <input type="number" step="1" max="1000" min="1" value="{{$item['quantity']}}" name="quantity"
-                                                   class="quantity-field form-control-sm form-input">
-                                            <input class="form-control form-control-sm" type="hidden" name="id" value="{{$item['product_id']}}">
-                                            <button type="submit" class="btn border border-green rounded-3 ms-2 bg-green text-white">Update price</button>
+                                            <div class="d-flex">
+                                                <input type="number" step="1" max="1000" min="1" value="{{$item['quantity']}}" name="quantity"
+                                                       class="quantity-field form-control-sm form-input">
+                                                <input class="form-control form-control-sm" type="hidden" name="id" value="{{$item['product_id']}}">
+                                                <div id="cartButton">
+                                                    <button type="submit" class="btn rounded-3 ms-2 bg-green text-dark">Update price</button>
+                                                </div>
+                                            </div>
+
                                         </form>
                                     </div>
                                 </div>
@@ -73,8 +78,8 @@
                         @auth()
                         <div class="py-2 px-3">
                             <div class="btn bg-green  d-flex rounded-4 justify-content-between align-items-center">
-                                <a href="{{route("checkout")}}" class="text-white text-decoration-none"> Go to Checkout</a>
-                                <p class="text-white">
+                                <a href="{{route("checkout")}}" class="text-dark text-decoration-none"> Go to Checkout</a>
+                                <p class="text-dark">
                                     {{Session::has('cart') ? Session::get('cart')->totalPrice:'0'}} &euro;</p>
                             </div>
                         </div>

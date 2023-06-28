@@ -205,3 +205,43 @@ footer {
     color: var(--main-color);
     border-color: var(--main-color);
 }
+#aside :hover {
+    color: var(--main-color);
+    border-color: var(--main-color);
+}
+#continueButton :hover {
+    color: var(--main-color);
+    border-color: var(--main-color);
+}
+#logoutButton :hover {
+    color: var(--main-color);
+    border-color: var(--main-color);
+}
+#signupButton :hover {
+    color: var(--main-color);
+    border-color: var(--main-color);
+}
+#signInButton :hover {
+    color: var(--main-color);
+    border-color: var(--main-color);
+}
+#detailButton :hover {
+    color: var(--main-color);
+    border-color: var(--main-color);
+}
+#cartButton :hover {
+    color: var(--main-color);
+    border-color: var(--main-color);
+}
+#updateInofButton :hover {
+    color: var(--main-color);
+    border-color: var(--main-color);
+}
+#placeOrderButton :hover {
+    color: var(--main-color);
+    border-color: var(--main-color);
+}
+#contactButton :hover {
+    color: var(--main-color);
+    border-color: var(--main-color);
+}

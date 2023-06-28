@@ -1,16 +1,17 @@
 <div class="row mt-3">
     <div class="col-lg-4 offset-lg-4 shadow-lg p-3 mb-5 bg-white rounded">
         <h1 class="text-left text-left fs-4">Contactformulier</h1>
-        @if (session('status'))
-            <div>
-                <div class="alert alert-success">
-                    <strong>Success!</strong> {{ session('status') }}
-                </div>
-            </div>
-        @endif
+
         <form wire:submit.prevent="submitForm" action="/contactformulier" method="POST">
             @csrf
             @method('POST')
+            @if (session('status'))
+                <div>
+                    <div class="alert alert-success">
+                        <strong>Success!</strong> {{ session('status') }}
+                    </div>
+                </div>
+            @endif
             <div class="form-floating mb-3">
                 {{$name}}
                 <input wire:model.defer="name" name="name" type="text" class="form-control" id="floatingInputValue" placeholder="Name">
@@ -34,15 +35,15 @@
                 @enderror
             </div>
             <div class="d-flex justify-content-end">
-                <button type="submit" class="btn btn-dark d-flex justify-content-end me-3">SUBMIT</button>
+                <div id="contactButton">
+                    <button type="submit" class="btn bg-green d-flex justify-content-end me-3">SUBMIT</button>
+                </div>
                 @if (session('status'))
                     <div>
                         <a href="/" class="btn btn-dark">HOME</a>
                     </div>
                 @endif
             </div>
-
-
         </form>
     </div>
 </div>

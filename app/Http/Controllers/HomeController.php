@@ -6,6 +6,7 @@ namespace App\Http\Controllers;
 use App\Models\Box;
 use App\Models\Card;
 use App\Models\Cart;
+use App\Models\Delivery;
 use App\Models\MonsterAttribute;
 use App\Models\MonsterClass;
 use App\Models\MonsterType;
@@ -14,9 +15,9 @@ use App\Models\Order;
 use App\Models\SpellType;
 use App\Models\TrapType;
 use Illuminate\Http\Request;
-use Illuminate\Pagination\LengthAwarePaginator;
 use Illuminate\Support\Facades\Session;
-use Stripe\Stripe;
+
+use Illuminate\Support\Facades\Validator;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
 class HomeController extends Controller
@@ -66,6 +67,7 @@ class HomeController extends Controller
             ->withQueryString();
         return view("shop", compact('boxes', 'cards', 'monsterTypes','monsterClasses','filterOptionMonsterType','filterOptionMonsterClass','filterOptionMonsterAttribute','monsterAttributes','spellTypes','trapTypes','filterOptionSpellType','filterOptionTrapType'));
     }
+
     public function search(Request $request)
     {
         $monsterClasses = MonsterClass::select('id', 'name')->get();
@@ -112,22 +114,21 @@ class HomeController extends Controller
         return view("order_received");
     }
 
-    public function contact()
-    {
-        return view("contact");
-    }
-
     public function checkout()
     {
+        $user = auth()->user();
+        $userId=$user->delivery_id;
+        $deliverie = Delivery::query()
+            ->where('id',$userId)
+            ->first();
         if (!Session::has('cart')) {
             return redirect('/');
+
         } else {
             $currentCart = Session::has('cart') ? Session::get('cart') : null;
             $cart = new Cart($currentCart);
             $cart = $cart->products;
-
-            return view("checkout", compact('cart'));
-
+            return view("checkout", compact('cart','deliverie'));
         }
     }
 
@@ -171,8 +172,66 @@ class HomeController extends Controller
         }
     }
 
+    public function deliveries(Request $request){
+        $user = auth()->user();
+        $userId=$user->delivery_id;
+        if (!Session::has('cart')) {
+            return redirect('/');
+        } else {
+            $currentCart = Session::has('cart') ? Session::get('cart') : null;
+            $cart = new Cart($currentCart);
+            $cart = $cart->products;
+
+            $rules = [
+                'street' => ['required'],
+                'streetNumber' => ['required','numeric','min:1'],
+                'stad' => ['required'],
+                'stadNummer' => ['required','numeric','min:1'],
+                'deliveryTime' => ['required','date','after:+2 days'],
+                'deliveryInstructions' => ['nullable'],
+            ];
+
+            // Validate the request data
+            $validator = Validator::make($request->all(), $rules);
+
+            if ($validator->fails()) {
+                return redirect()->back()->withErrors($validator)->withInput();
+            }
+
+            if ($userId === null){
+                $deliverie = new Delivery();
+                $deliverie->street = $request->street;
+                $deliverie->street_number = $request->streetNumber;
+                $deliverie->city = $request->stad;
+                $deliverie->city_number = $request->stadNummer;
+                $deliverie->delivery_time = $request->deliveryTime;
+                $deliverie->instructions = $request->deliveryInstructions;
+                $deliverie->save();
+                $user->delivery_id = $deliverie->id;
+                $user->save();
+            }else{
+                $deliverie = Delivery::query()
+                    ->where('id',$userId)
+                    ->first();
+                $deliverie->street = $request->street;
+                $deliverie->street_number = $request->streetNumber;
+                $deliverie->city = $request->stad;
+                $deliverie->city_number = $request->stadNummer;
+                $deliverie->delivery_time = $request->deliveryTime;
+                $deliverie->instructions = $request->deliveryInstructions;
+                $deliverie->update();
+            }
+            return view("checkout", compact('cart','deliverie'));
+        }
+    }
+
     public function success(Request $request)
     {
+        $user = auth()->user();
+        $userId=$user->delivery_id;
+        $deliverie = Delivery::query()
+            ->where('id',$userId)
+            ->first();
         \Stripe\Stripe::setApiKey(env('STRIPE_SECRET_KEY'));
         $sessionId = $request->get('session_id');
         try {
@@ -192,6 +251,12 @@ class HomeController extends Controller
             if ($order->status === 'unpaid') {
                 $order->status = 'paid';
                 $order->session_id = $session->payment_intent;
+                $order->street = $deliverie->street;
+                $order->street_number = $deliverie->street_number;
+                $order->city = $deliverie->city;
+                $order->city_number = $deliverie->city_number;
+                $order->delivery_time = $deliverie->delivery_time;
+                $order->instructions = $deliverie->instructions;
                 $order->save();
             }
             Session::forget('cart');

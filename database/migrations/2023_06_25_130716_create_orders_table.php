@@ -18,6 +18,12 @@ return new class extends Migration
             $table->string('status');
             $table->decimal('total_price');
             $table->string('session_id');
+            $table->string('street')->nullable();
+            $table->integer('street_number')->nullable();
+            $table->string('city')->nullable();
+            $table->integer('city_number')->nullable();
+            $table->date('delivery_time')->nullable();
+            $table->text('instructions')->nullable();
             $table->timestamps();
         });
     }

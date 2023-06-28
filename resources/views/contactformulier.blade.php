@@ -1,4 +1,5 @@
-@extends('layouts.app')
-@section('content')
+<x-header></x-header>
+
    <livewire:contact-form/>
-@endsection
+
+<x-footer></x-footer>

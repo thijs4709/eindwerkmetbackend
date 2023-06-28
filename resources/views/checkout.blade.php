@@ -5,10 +5,10 @@
         <header class="my-4">
             <h2>checkout</h2>
         </header>
-
         <div class="row p-4 mb-5">
             <div class="accordion col-12 col-lg-6" id="accordionExample">
-                <form action="">
+                <form action="{{route('deliveries')}}" method="POST">
+                    @csrf
                     <!--adress-->
                     <div class="accordion-item">
                         <h2 class="accordion-header" id="headingOne">
@@ -20,10 +20,22 @@
                         <div aria-labelledby="headingOne" class="accordion-collapse collapse show" data-bs-parent="#accordionExample"
                              id="collapseOne">
                             <div class="accordion-body">
-                                <input id="street" type="text" class="form-control mb-2" placeholder="street" required>
-                                <input id="streetNumber" type="number" class="form-control mb-2" placeholder="street number" required>
-                                <input id="stad" type="text" class="form-control mb-2" placeholder="city" required>
-                                <input id="stadNummer" type="number" class="form-control mb-2" placeholder="city number" required>
+                                <input id="street" name="street" type="text" class="form-control mb-2" @if(isset($deliverie)) value="{{$deliverie->street}}@endif" placeholder="street" required>
+                                @error('street')
+                                <p class="text-danger fs-6">{{$message}}</p>
+                                @enderror
+                                <input id="streetNumber" name="streetNumber" type="number" class="form-control mb-2" @if(isset($deliverie)) value="{{$deliverie->street_number}}" @endif placeholder="street number" required>
+                                @error('streetNumber')
+                                <p class="text-danger fs-6">{{$message}}</p>
+                                @enderror
+                                <input id="stad" name="stad" type="text" class="form-control mb-2" @if(isset($deliverie)) value="{{$deliverie->city}}" @endif placeholder="city" required>
+                                @error('stad')
+                                <p class="text-danger fs-6">{{$message}}</p>
+                                @enderror
+                                <input id="stadNummer" name="stadNummer" type="number" class="form-control mb-2" @if(isset($deliverie)) value="{{$deliverie->city_number}}" @endif placeholder="city number" required>
+                                @error('stadNummer')
+                                <p class="text-danger fs-6">{{$message}}</p>
+                                @enderror
                             </div>
                         </div>
                     </div>
@@ -38,8 +50,11 @@
                         <div aria-labelledby="headingTwo" class="accordion-collapse collapse" data-bs-parent="#accordionExample"
                              id="collapseTwo">
                             <div class="accordion-body">
-                                <label for="deliverlyTime"></label>
-                                <input type="date" id="deliverlyTime" name="deliverlyTime" min="{{ now()->addDays(2)->format('Y-m-d') }} " required>>
+                                <label for="deliveryTime"></label>
+                                <input type="date" id="deliveryTime" name="deliveryTime" @if(isset($deliverie)) value="{{$deliverie->delivery_time}}" @endif  required>>
+                                @error('deliveryTime')
+                                <p class="text-danger fs-6">{{$message}}</p>
+                                @enderror
                             </div>
                         </div>
                     </div>
@@ -54,16 +69,23 @@
                         <div aria-labelledby="headingThree" class="accordion-collapse collapse" data-bs-parent="#accordionExample"
                              id="collapseThree">
                             <div class="accordion-body">
-                                <label class="form-label" for="DeliveryInstructions">Delivery instructions</label>
-                                <textarea class="form-control" id="DeliveryInstructions" placeholder="Write delivery instructions"
-                                          rows="3"></textarea>
+                                <label class="form-label" for="deliveryInstructions">Delivery instructions</label>
+                                <textarea class="form-control"  id="deliveryInstructions" name="deliveryInstructions"  placeholder="Write delivery instructions"
+                                          rows="3">@if(isset($deliverie)) {{$deliverie->instructions}}@endif</textarea>
                                 <p class="form-text">Add instructions for how you want your order shopped and/or
                                     delivered</p>
+                                @error('deliveryInstructions')
+                                <p class="text-danger fs-6">{{$message}}</p>
+                                @enderror
+                                <div id="updateInofButton">
+                                    <button type="submit" class="text-dark btn bg-green mt-1">Update Info</button>
+                                </div>
                             </div>
                         </div>
                     </div>
                 </form>
                 <!--pay-->
+                @if(isset($deliverie))
                 <div class="accordion-item">
                     <h2 class="accordion-header" id="headingFour">
                         <button aria-controls="collapseFour" aria-expanded="false" class="accordion-button collapsed fw-bold"
@@ -76,12 +98,14 @@
                         <div class="accordion-body">
                             <form action="{{route('checkoutPay')}}" method="POST">
                                 @csrf
-                                <button class="text-white btn bg-green">Place Order</button>
+                                <div id="placeOrderButton">
+                                    <button class="text-dark btn bg-green">Place Order</button>
+                                </div>
                             </form>
                         </div>
                     </div>
                 </div>
-
+                @endif
             </div>
             <div class="col-12 col-lg-4 offset-lg-1">
                 <div class="mt-5 mt-lg-0">

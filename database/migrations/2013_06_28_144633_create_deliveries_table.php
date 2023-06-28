@@ -17,10 +17,10 @@ return new class extends Migration
             $table->id();
             $table->string('street');
             $table->integer('street_number');
-            $table->integer('city');
+            $table->string('city');
             $table->integer('city_number');
             $table->date('delivery_time');
-            $table->date('instructions');
+            $table->text('instructions');
             $table->timestamps();
         });
     }

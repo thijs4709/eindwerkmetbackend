@@ -20,7 +20,7 @@
                         </div>
                     </div>
                     <div class="mt-3 row justify-content-start g-2 align-items-center">
-                        <div class="col-md-4 col-4">
+                        <div  class="col-md-4 col-4">
                             <a href="{{route('addToCart',['id' => $card->id, 'product_type' => $card->product_type])}}"
                                class="btn bg-green">
                                 <i class="bi bi-plus-lg"></i> add

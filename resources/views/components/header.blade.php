@@ -62,7 +62,7 @@
                         <a class="nav-link" href="{{route("cart")}}">Cart</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" href="{{route("contact")}}">contact</a>
+                        <a class="nav-link" href="{{route("contact.create")}}">contact</a>
                     </li>
                 </ul>
                 <div class="d-none d-lg-block w-50 d-lg-flex justify-content-end">
@@ -128,7 +128,10 @@
                             <label for="password-confirm" class="form-label">Password Confirm</label>
                             <input id="password-confirm" type="password" class="form-control" name="password_confirmation" required autocomplete="new-password">
                         </div>
-                        <button type="submit" class="btn bg-green text-white">Sign Up</button>
+                        <div id="signupButton">
+                            <button type="submit" class="btn bg-green text-darj">Sign Up</button>
+                        </div>
+
                     </form>
                 </div>
                 <div class="modal-footer border-0 justify-content-center">
@@ -167,7 +170,9 @@
                         </span>
                             @enderror
                         </div>
-                        <button type="submit" class="btn bg-green text-white">Sign In</button>
+                        <div id="signInButton">
+                            <button  type="submit" class="btn bg-green text-dark">Sign In</button>
+                        </div>
                     </form>
                 </div>
                 <div class="modal-footer border-0 justify-content-center">
@@ -186,8 +191,8 @@
                 </div>
                 <div class="modal-body">
                     <div class="modal-content">
-                        <div class="modal-footer">
-                            <a class="btn bg-green text-white" href="#" onclick="event.preventDefault();
+                        <div id="logoutButton" class="modal-footer">
+                            <a class="btn bg-green text-dark" href="#" onclick="event.preventDefault();
                    document.getElementById('logout-form').submit();">
                                 Logout
                             </a>
@@ -225,10 +230,17 @@
                                             <img src="{{$item['product_image']}}" alt="{{$item['product_name']}}"
                                                  class="img-fluid py-3">
                                             <div class="ms-3">
+                                                @if($item['product']->product_type === "box")
                                                 <a href="{{route("shop_detail_box", $item['product']->slug)}}"
                                                    class="text-dark text-decoration-none">
                                                     <h6 class="mb-0">{{$item['product_name']}} </h6>
                                                 </a>
+                                                @else
+                                                <a href="{{route("shop_detail_card", $item['product']->slug)}}"
+                                                   class="text-dark text-decoration-none">
+                                                    <h6 class="mb-0">{{$item['product_name']}} </h6>
+                                                </a>
+                                                @endif
                                                 <div class="small">
                                                     <a href="{{route('removeItem', $item['product_id'])}}"
                                                        class="text-decoration-none d-flex">
@@ -263,8 +275,8 @@
                         @endforeach
                     @endif
                 </ul>
-                <div class="d-flex justify-content-between mt-4">
-                    <a href="{{route('shop')}}" class="btn bg-green">Continue Shopping</a>
+                <div id="continueButton" class="d-flex justify-content-between mt-4">
+                    <a href="{{route('shop')}}" class="btn bg-green border-green text-dark">Continue Shopping</a>
                     <button type="submit" class="btn btn-dark">Update Cart</button>
                 </div>
             </form>
@@ -291,7 +303,7 @@
                         <a class="nav-link text-white" href="{{route("cart")}}">Cart</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link text-white" href="{{route("contact")}}">contact</a>
+                        <a class="nav-link text-white" href="{{route("contact.create")}}">contact</a>
                     </li>
                 </ul>
             </div>

@@ -32,14 +32,12 @@ use Illuminate\Support\Facades\Route;
 //});
 Route::get('/', [HomeController::class, 'index'])->name('home_frontend');
 Route::get('/shop', [HomeController::class, 'shop'])->name('shop');
-
 Route::get('/search', [HomeController::class, 'search'])->name('search');
-
 Route::get('/shop_detail_card/{card:slug}', [HomeController::class, 'shop_detail_card'])->name('shop_detail_card');
 Route::get('/shop_detail_box/{box:slug}', [HomeController::class, 'shop_detail_box'])->name('shop_detail_box');
 Route::post('/order_received', [HomeController::class, 'order_received'])->name('order_received');
-Route::get('/contact', [HomeController::class, 'contact'])->name('contact');
 Route::get('/checkout', [HomeController::class, 'checkout'])->name('checkout');
+Route::post('/deliveries', [HomeController::class, 'deliveries'])->name('deliveries');
 Route::post('/checkoutPay', [HomeController::class, 'checkoutPay'])->name('checkoutPay');
 Route::get('/success',[HomeController::class, 'success'])->name('checkout.success');
 Route::get('/cancel',[HomeController::class, 'cancel'])->name('checkout.cancel');
@@ -49,8 +47,6 @@ Route::post('/cart', [HomeController::class, 'updateQuantity'])->name('quantity'
 Route::post('/cartBulk', [HomeController::class, 'updateQuantityBulk'])->name('quantityBulk');
 Route::get('/removeItem/{id}', [HomeController::class, 'removeItem'])->name('removeItem');
 Route::get('/addToCart/{id}/{product_type}','App\Http\Controllers\HomeController@addToCart')->name('addToCart');
-
-
 Route::get('contactformulier', [ContactController::class, 'create'])->name('contact.create');
 Route::post('contactformulier', [ContactController::class, 'store'])->name('contact.store');
 

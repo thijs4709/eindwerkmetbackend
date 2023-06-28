@@ -113,7 +113,10 @@
                     </div>
                     @endforeach
                 </div>
-                <button type="submit" class="btn bg-green text-white mt-2">Apply Filters</button>
+                <div id="aside">
+                    <button type="submit" class="btn bg-green my-2">Apply Filters</button>
+                </div>
+
             </form>
 
 
@@ -143,13 +146,13 @@
                                         <img class="img-fluid" src="{{asset($box->photo->file)}}">
                                     </a>
                                     <!-- heading -->
-                                    <div class="text-small mb-1">
+                                    <div class="text-dark mb-1">
                                         <small>
                                             {{$box->name}}
                                         </small>
                                     </div>
                                     <!-- price -->
-                                    <div class="d-flex justify-content-between align-items-center">
+                                    <div class="d-flex justify-content-between align-items-center text-dark">
                                         <p>&euro;{{$box->price}}</p>
                                         <a href="{{route('addToCart',['id' => $box->id, 'product_type' => $box->product_type])}}" class="btn bg-green">
                                             <i class="bi bi-plus-lg"></i> add
@@ -170,13 +173,13 @@
                                         <img class="img-fluid" src="{{asset($card->photo->file)}}">
                                     </a>
                                     <!-- heading -->
-                                    <div class="text-small mb-1">
+                                    <div class="text-dark mb-1">
                                         <small>
                                             {{$card->name}}
                                         </small>
                                     </div>
                                     <!-- price -->
-                                    <div class="d-flex justify-content-between align-items-center">
+                                    <div class="d-flex justify-content-between align-items-center text-dark">
                                         <p>&euro;{{$card->price}}</p>
                                         <a href="{{route('addToCart',['id' => $card->id, 'product_type' => $card->product_type])}}"
                                            class="btn bg-green">
