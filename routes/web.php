@@ -2,11 +2,11 @@
 
 use App\Http\Controllers\AdminBoxesController;
 use App\Http\Controllers\AdminCardController;
-use App\Http\Controllers\AdminCardTypeController;
 use App\Http\Controllers\AdminMonsterAttributeController;
 use App\Http\Controllers\AdminMonsterClassController;
 use App\Http\Controllers\AdminMonsterSpecialTypeController;
 use App\Http\Controllers\AdminMonsterTypeController;
+use App\Http\Controllers\AdminOrderController;
 use App\Http\Controllers\AdminSpellTypeController;
 use App\Http\Controllers\AdminTrapTypeController;
 use App\Http\Controllers\AdminUsersController;
@@ -96,6 +96,8 @@ Route::group(["prefix" => "admin", "middleware" => ['auth', 'verified']], functi
         Route::resource('traptype', AdminTrapTypeController::class);
         Route::get('traptype/edit/{trapType:slug}', [AdminTrapTypeController::class, 'edit'])->name('traptype.edit');
         Route::post('traptype/restore/{post}', [AdminTrapTypeController::class, 'trapTypeRestore'])->name('admin.traptyperestore');
+
+        Route::get('orders',[AdminOrderController::class,'index'])->name('order.index');
     });
 
 });

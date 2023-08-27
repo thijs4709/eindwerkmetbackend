@@ -143,7 +143,7 @@ class HomeController extends Controller
             $totalPrice = 0;
             \Stripe\Stripe::setApiKey(env('STRIPE_SECRET_KEY'));
             foreach ($cart as $product) {
-                $totalPrice += $product['product_price'];
+                $totalPrice += $product['product_price'] * $product['quantity'];
                 $lineItems[] = [
                     'price_data' => [
                         'currency' => 'eur',
@@ -161,7 +161,6 @@ class HomeController extends Controller
                 'success_url' => route('checkout.success', [], true) . "?session_id={CHECKOUT_SESSION_ID}",
                 'cancel_url' => route('checkout.cancel', [], true),
             ]);
-
             $order = new Order();
             $order->status = 'unpaid';
             $order->total_price = $totalPrice;

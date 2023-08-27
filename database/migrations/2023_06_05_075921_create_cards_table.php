@@ -24,7 +24,7 @@ return new class extends Migration
             $table->foreignId('monster_class_id')->unsigned()->nullable()->constrained()->cascadeOnDelete();
             $table->boolean('pendulum')->nullable();
             $table->foreignId('monster_special_type_id')->unsigned()->nullable()->constrained()->cascadeOnDelete();
-            $table->string('description')->nullable()       ;
+            $table->text('description')->nullable()       ;
             $table->string('atk')->nullable();
             $table->string('def')->nullable();
             $table->foreignId('spell_type_id')->unsigned()->nullable()->constrained()->cascadeOnDelete();

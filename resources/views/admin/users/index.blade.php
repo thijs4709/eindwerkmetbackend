@@ -8,7 +8,7 @@
         <x-alert :type="session('alert')['type']" :message="session('alert')['message']">
             <x-slot name="title">Users</x-slot>
         </x-alert>
-    @endif
+    @endi
 
    <livewire:data-tables/>
 
