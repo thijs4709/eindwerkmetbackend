@@ -19,9 +19,9 @@ return new class extends Migration
             $table->string("product_name");
             $table->decimal("product_original_price");
             $table->text('product_description');
+            $table->unsignedInteger("quantity")->default(1);
             $table->foreignId("card_id")->nullable();
             $table->foreignId("box_id")->nullable();
-
             $table->timestamps();
         });
     }

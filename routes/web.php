@@ -98,6 +98,7 @@ Route::group(["prefix" => "admin", "middleware" => ['auth', 'verified']], functi
         Route::post('traptype/restore/{post}', [AdminTrapTypeController::class, 'trapTypeRestore'])->name('admin.traptyperestore');
 
         Route::get('orders',[AdminOrderController::class,'index'])->name('order.index');
+        Route::get('orders/{order}',[AdminOrderController::class,'show'])->name('order.show');
     });
 
 });

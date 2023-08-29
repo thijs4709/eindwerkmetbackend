@@ -2,11 +2,11 @@
 <ul class="navbar-nav bg-gradient-primary sidebar sidebar-dark accordion" id="accordionSidebar">
 
     <!-- Sidebar - Brand -->
-    <a class="sidebar-brand d-flex align-items-center" href="{{route("home")}}">
+    <a class="sidebar-brand d-flex align-items-center" href="{{route("home_frontend")}}">
         <div class="sidebar-brand-icon rotate-n-15">
             <i class="fas fa-cogs"></i>
         </div>
-        <div class="sidebar-brand-text mx-3">CMS</div>
+        <div class="sidebar-brand-text mx-3">Yugi's Cart</div>
     </a>
 
     <!-- Divider -->
@@ -40,6 +40,19 @@
                 <h6 class="collapse-header">Links:</h6>
                 <a class="collapse-item" href="{{route('users.index')}}">All users</a>
                 <a class="collapse-item" href="{{route('users.create')}}">Add user</a>
+            </div>
+        </div>
+    </li>
+    <li class="nav-item">
+        <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapseOrder"
+           aria-expanded="true" aria-controls="collapseOrder">
+            <i class="fas fa-tag"></i>
+            <span>Orders</span>
+        </a>
+        <div id="collapseOrder" class="collapse" aria-labelledby="headingTwo" data-parent="#accordionSidebar">
+            <div class="bg-white py-2 collapse-inner rounded">
+                <h6 class="collapse-header">Links:</h6>
+                <a class="collapse-item" href="{{route('order.index')}}">All orders</a>
             </div>
         </div>
     </li>

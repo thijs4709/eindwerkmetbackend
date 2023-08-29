@@ -12,6 +12,7 @@ use App\Models\MonsterClass;
 use App\Models\MonsterType;
 use App\Models\Order;
 
+use App\Models\OrderDetail;
 use App\Models\SpellType;
 use App\Models\TrapType;
 use Illuminate\Http\Request;
@@ -28,7 +29,7 @@ class HomeController extends Controller
         $trapTypes = TrapType::select('id')->get();
         $monsterTypes = MonsterType::select('id')->get();
         $boxes = Box::query()->orderByDesc('created_at')->with('photo')->limit(6)->get();
-        return view("home", compact("boxes","spellTypes","trapTypes","monsterTypes"));
+        return view("home", compact("boxes", "spellTypes", "trapTypes", "monsterTypes"));
     }
 
     public function shop(Request $request)
@@ -49,23 +50,23 @@ class HomeController extends Controller
             ->when($filterOptionMonsterType, function ($query) use ($filterOptionMonsterType) {
                 $query->where('monster_type_id', $filterOptionMonsterType);
             })
-            ->when($filterOptionMonsterClass, function ($query)use($filterOptionMonsterClass){
+            ->when($filterOptionMonsterClass, function ($query) use ($filterOptionMonsterClass) {
                 $query->whereIn('monster_class_id', $filterOptionMonsterClass);
             })
-            ->when($filterOptionMonsterAttribute, function ($query)use($filterOptionMonsterAttribute){
+            ->when($filterOptionMonsterAttribute, function ($query) use ($filterOptionMonsterAttribute) {
                 $query->where('monster_attribute_id', $filterOptionMonsterAttribute);
             })
-            ->when($filterOptionSpellType, function ($query)use($filterOptionSpellType){
+            ->when($filterOptionSpellType, function ($query) use ($filterOptionSpellType) {
                 $query->whereIn('spell_type_id', $filterOptionSpellType);
             })
-            ->when($filterOptionTrapType, function ($query)use($filterOptionTrapType){
+            ->when($filterOptionTrapType, function ($query) use ($filterOptionTrapType) {
                 $query->whereIn('trap_type_id', $filterOptionTrapType);
             })
             ->orderByDesc('created_at')
             ->with('photo')
             ->paginate(12)
             ->withQueryString();
-        return view("shop", compact('boxes', 'cards', 'monsterTypes','monsterClasses','filterOptionMonsterType','filterOptionMonsterClass','filterOptionMonsterAttribute','monsterAttributes','spellTypes','trapTypes','filterOptionSpellType','filterOptionTrapType'));
+        return view("shop", compact('boxes', 'cards', 'monsterTypes', 'monsterClasses', 'filterOptionMonsterType', 'filterOptionMonsterClass', 'filterOptionMonsterAttribute', 'monsterAttributes', 'spellTypes', 'trapTypes', 'filterOptionSpellType', 'filterOptionTrapType'));
     }
 
     public function search(Request $request)
@@ -80,21 +81,21 @@ class HomeController extends Controller
         $filterOptionMonsterAttribute = $request->input('filter_attribute');
         $filterOptionSpellType = $request->input('filter_spell');
         $filterOptionTrapType = $request->input('filter_trap');
-        if ($request->search){
+        if ($request->search) {
             $cards = Card::query()
-                ->where('name','LIKE','%'.$request->search.'%')
+                ->where('name', 'LIKE', '%' . $request->search . '%')
                 ->orderByDesc('created_at')
                 ->with('photo')
                 ->paginate(12)
                 ->withQueryString();
             $boxes = Box::query()
-                ->where('name','LIKE','%'.$request->search.'%')
+                ->where('name', 'LIKE', '%' . $request->search . '%')
                 ->orderByDesc('created_at')
                 ->with('photo')
                 ->paginate(12)
                 ->withQueryString();
-            return view("shop", compact('boxes', 'monsterTypes','monsterClasses','filterOptionMonsterType','filterOptionMonsterClass','filterOptionMonsterAttribute','monsterAttributes','spellTypes','trapTypes','filterOptionSpellType','filterOptionTrapType','cards'));
-        }else{
+            return view("shop", compact('boxes', 'monsterTypes', 'monsterClasses', 'filterOptionMonsterType', 'filterOptionMonsterClass', 'filterOptionMonsterAttribute', 'monsterAttributes', 'spellTypes', 'trapTypes', 'filterOptionSpellType', 'filterOptionTrapType', 'cards'));
+        } else {
             return redirect()->back();
         }
     }
@@ -117,9 +118,9 @@ class HomeController extends Controller
     public function checkout()
     {
         $user = auth()->user();
-        $userId=$user->delivery_id;
+        $userId = $user->delivery_id;
         $deliverie = Delivery::query()
-            ->where('id',$userId)
+            ->where('id', $userId)
             ->first();
         if (!Session::has('cart')) {
             return redirect('/');
@@ -128,7 +129,7 @@ class HomeController extends Controller
             $currentCart = Session::has('cart') ? Session::get('cart') : null;
             $cart = new Cart($currentCart);
             $cart = $cart->products;
-            return view("checkout", compact('cart','deliverie'));
+            return view("checkout", compact('cart', 'deliverie'));
         }
     }
 
@@ -141,6 +142,7 @@ class HomeController extends Controller
             $cart = new Cart($currentCart);
             $cart = $cart->products;
             $totalPrice = 0;
+
             \Stripe\Stripe::setApiKey(env('STRIPE_SECRET_KEY'));
             foreach ($cart as $product) {
                 $totalPrice += $product['product_price'] * $product['quantity'];
@@ -166,14 +168,30 @@ class HomeController extends Controller
             $order->total_price = $totalPrice;
             $order->session_id = $session->id;
             $order->save();
+            foreach ($cart as $product) {
+                $orderDetail = new OrderDetail();
+                $orderDetail->order_id = $order->id;
+                $orderDetail->product_name = $product['product_name'];
+                $orderDetail->product_original_price = $product['product_price'];
+                $orderDetail->product_description = $product['product_description'];
+                $orderDetail->quantity = $product['quantity'];
+                if ($product['product']::class === Box::class) {
+                    $orderDetail->box_id = $product['product']->getOriginal("id");
+                } else {
+                    $orderDetail->card_id = $product['product']->getOriginal("id");
+                }
+                $orderDetail->save();
+            }
+
             /*return view("checkout", compact('cart'));*/
             return redirect($session->url);
         }
     }
 
-    public function deliveries(Request $request){
+    public function deliveries(Request $request)
+    {
         $user = auth()->user();
-        $userId=$user->delivery_id;
+        $userId = $user->delivery_id;
         if (!Session::has('cart')) {
             return redirect('/');
         } else {
@@ -183,10 +201,10 @@ class HomeController extends Controller
 
             $rules = [
                 'street' => ['required'],
-                'streetNumber' => ['required','numeric','min:1'],
+                'streetNumber' => ['required', 'numeric', 'min:1'],
                 'stad' => ['required'],
-                'stadNummer' => ['required','numeric','min:1'],
-                'deliveryTime' => ['required','date','after:+2 days'],
+                'stadNummer' => ['required', 'numeric', 'min:1'],
+                'deliveryTime' => ['required', 'date', 'after:+2 days'],
                 'deliveryInstructions' => ['nullable'],
             ];
 
@@ -197,7 +215,7 @@ class HomeController extends Controller
                 return redirect()->back()->withErrors($validator)->withInput();
             }
 
-            if ($userId === null){
+            if ($userId === null) {
                 $deliverie = new Delivery();
                 $deliverie->street = $request->street;
                 $deliverie->street_number = $request->streetNumber;
@@ -208,9 +226,9 @@ class HomeController extends Controller
                 $deliverie->save();
                 $user->delivery_id = $deliverie->id;
                 $user->save();
-            }else{
+            } else {
                 $deliverie = Delivery::query()
-                    ->where('id',$userId)
+                    ->where('id', $userId)
                     ->first();
                 $deliverie->street = $request->street;
                 $deliverie->street_number = $request->streetNumber;
@@ -220,16 +238,16 @@ class HomeController extends Controller
                 $deliverie->instructions = $request->deliveryInstructions;
                 $deliverie->update();
             }
-            return view("checkout", compact('cart','deliverie'));
+            return view("checkout", compact('cart', 'deliverie'));
         }
     }
 
     public function success(Request $request)
     {
         $user = auth()->user();
-        $userId=$user->delivery_id;
+        $userId = $user->delivery_id;
         $deliverie = Delivery::query()
-            ->where('id',$userId)
+            ->where('id', $userId)
             ->first();
         \Stripe\Stripe::setApiKey(env('STRIPE_SECRET_KEY'));
         $sessionId = $request->get('session_id');
