@@ -229,33 +229,30 @@
                                         <div class="d-flex">
                                             <img src="{{$item['product_image']}}" alt="{{$item['product_name']}}"
                                                  class="img-fluid py-3">
-                                            <div class="ms-3">
-                                                @if($item['product']->product_type === "box")
+                                        </div>
+                                    </div>
+                                    <div class="col-4 col-md-4 col-lg-6">
+                                            @if($item['product']->product_type === "box")
                                                 <a href="{{route("shop_detail_box", $item['product']->slug)}}"
                                                    class="text-dark text-decoration-none">
                                                     <h6 class="mb-0">{{$item['product_name']}} </h6>
                                                 </a>
-                                                @else
+                                            @else
                                                 <a href="{{route("shop_detail_card", $item['product']->slug)}}"
                                                    class="text-dark text-decoration-none">
                                                     <h6 class="mb-0">{{$item['product_name']}} </h6>
                                                 </a>
-                                                @endif
-                                                <div class="small">
-                                                    <a href="{{route('removeItem', $item['product_id'])}}"
-                                                       class="text-decoration-none d-flex">
-                                        <span class="me-1 align-text-center">
-                                            <i class="bi bi-trash text-green"></i>
-                                        </span>
-                                                        <p class="text-decoration-none text-black">Remove</p>
-                                                    </a>
-                                                </div>
+                                            @endif
+                                            <div class="small">
+                                                <a href="{{route('removeItem', $item['product_id'])}}"
+                                                   class="text-decoration-none d-flex">
+                                                        <span class="me-1 align-text-center">
+                                                            <i class="bi bi-trash text-green"></i>
+                                                        </span>
+                                                    <p class="text-decoration-none text-black">Remove</p>
+                                                </a>
                                             </div>
-                                        </div>
-                                    </div>
-                                    <div class="col-4 col-md-4 col-lg-6 mt-4">
                                         <div class="input-group d-flex">
-
                                             <input type="number" step="1" max="1000" min="1"
                                                    value="{{$item['quantity']}}"
                                                    name="items[{{$loop->index}}][quantity]"
@@ -263,8 +260,6 @@
                                             <input class="form-control form-control-sm" type="hidden"
                                                    name="items[{{$loop->index}}][id]"
                                                    value="{{$item['product_id']}}">
-
-
                                         </div>
                                     </div>
                                     <div class="col-2 col-md-2 col-lg-2 text-lg-end text-start text-md-end ">
